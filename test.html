@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INACC Space Science Kids Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(23, 32, 54, 0.85);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-blue: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-yellow: #facc15;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 20% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+      background-size: 100% 100%, 100% 100%, 250px 250px, 200px 200px, 300px 300px, 220px 220px;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+    }
+
+    h1, h2, h3, .brand {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* Top Nav / Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px 0 20px 0;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .controls-top {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Cards */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+      color: #000;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 99px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Screens (Toggled by JS) */
+    .screen {
+      display: none;
+    }
+    .screen.active {
+      display: block;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Home Dashboard */
+    .hero-title {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 30%, #facc15 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 28px;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .mission-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mission-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .mission-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+
+    .badge-standard { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .badge-challenge { background: rgba(250, 204, 21, 0.2); color: #facc15; }
+    .badge-olympiad { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    .mission-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .mission-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .mission-meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Chapter Filter Section */
+    .chapter-selector {
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .chip-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .chip-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-blue);
+    }
+
+    /* Quiz Header & Progress */
+    .quiz-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-yellow));
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+
+    .pill-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      font-size: 0.85rem;
+    }
+
+    /* Question UI */
+    .question-title {
+      font-size: 1.35rem;
+      line-height: 1.45;
+      font-weight: 800;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .option-card:hover:not(.disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(4px);
+    }
+
+    .option-card.correct {
+      background: rgba(34, 197, 94, 0.25) !important;
+      border-color: var(--accent-green) !important;
+      color: #86efac !important;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    }
+
+    .option-card.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--accent-red) !important;
+      color: #fca5a5 !important;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .option-card.disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    /* Feedback Banner */
+    .feedback-box {
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-top: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-box.correct {
+      display: flex;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid var(--accent-green);
+      color: #bbf7d0;
+    }
+
+    .feedback-box.wrong {
+      display: flex;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #fecaca;
+    }
+
+    .feedback-text {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    /* Results Screen */
+    .results-hero {
+      text-align: center;
+      padding: 10px 0 24px;
+    }
+
+    .results-hero h2 {
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+      color: var(--accent-yellow);
+    }
+
+    .score-badge {
+      font-size: 3.5rem;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin: 12px 0;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid var(--card-border);
+    }
+
+    .stat-box .val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-box .lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Mistake Log Screen */
+    .mistake-card {
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .mistake-card-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #f87171;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .mistake-q {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .mistake-answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .ans-wrong-pill {
+      background: rgba(239, 68, 68, 0.2);
+      padding: 6px 10px;
+      border-radius: 8px;
+      color: #fca5a5;
+    }
+
+    .ans-correct-pill {
+      background: rgba(34, 197, 94, 0.2);
+      padding: 6px 10px;
+      border-radius: 8px;
+      color: #86efac;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 1.8rem; }
+      .question-title { font-size: 1.15rem; }
+      .option-card { font-size: 0.95rem; padding: 12px 16px; }
+      .glass-card { padding: 18px; }
+      .mistake-answers { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="brand-title" onclick="app.showHome()">
+        <span>🚀</span> INACC SPACE QUIZ
+      </div>
+      <div class="controls-top">
+        <button class="btn-icon" id="soundToggle" onclick="app.toggleSound()">
+          🔊 Sound ON
+        </button>
+        <button class="btn-icon" onclick="app.showMistakes()">
+          ❌ Mistakes (<span id="mistakeBadgeCount">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: HOME / MISSION SELECT -->
+    <div id="homeScreen" class="screen active">
+      <div class="glass-card">
+        <h1 class="hero-title">Welcome, Space Explorer! 🌌</h1>
+        <p class="hero-subtitle">Master Solar System science, rocketry, astronomy & Olympiad challenges.</p>
+
+        <div class="mission-grid">
+          <!-- Round 1 -->
+          <div class="mission-card" onclick="app.startQuiz('Round 1')">
+            <span class="mission-badge badge-standard">🟢 Standard • 80 Qs</span>
+            <div class="mission-icon">🪐</div>
+            <div class="mission-name">Round 1</div>
+            <div class="mission-meta">Core Space Science (Chapters 1–8)</div>
+          </div>
+
+          <!-- Round 2 -->
+          <div class="mission-card" onclick="app.startQuiz('Round 2')">
+            <span class="mission-badge badge-challenge">🟡 Challenge • 30 Qs</span>
+            <div class="mission-icon">🌟</div>
+            <div class="mission-name">Round 2</div>
+            <div class="mission-meta">Telescopes, Rovers & Deep Space</div>
+          </div>
+
+          <!-- Round 3 -->
+          <div class="mission-card" onclick="app.startQuiz('Round 3')">
+            <span class="mission-badge badge-olympiad">🔴 Hard Olympiad • 20 Qs</span>
+            <div class="mission-icon">🚀</div>
+            <div class="mission-name">Round 3</div>
+            <div class="mission-meta">Advanced Orbital Mechanics & Logic</div>
+          </div>
+        </div>
+
+        <!-- Chapter Practice -->
+        <div class="chapter-selector">
+          <div style="font-weight: 800; font-size: 1rem; color: var(--accent-yellow); margin-bottom: 4px;">
+            📚 Practice By Specific Chapter
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Choose a targeted topic to build mastery:</p>
+          <div class="chapter-grid" id="chapterChips"></div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+          <button class="btn-secondary" onclick="app.showParentSummary()">📊 Teacher / Parent Dashboard</button>
+          <button class="btn-secondary" style="color: #f87171;" onclick="app.resetProgress()">🔄 Reset Progress</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: ACTIVE QUIZ -->
+    <div id="quizScreen" class="screen">
+      <div class="glass-card">
+        <div class="quiz-top-bar">
+          <div class="pill-info" id="quizContextBadge">🪐 Round 1</div>
+          <div class="pill-info" id="quizScoreBadge">⭐ Score: 0</div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div id="progressBar" class="progress-bar-fill"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 700;">
+          <span id="questionCounter">Question 1 of 80</span>
+          <span id="mistakeCounter">Mistakes this run: 0</span>
+        </div>
+
+        <div class="question-title" id="questionText">Question goes here?</div>
+
+        <div class="options-list" id="optionsContainer"></div>
+
+        <div id="feedbackBox" class="feedback-box">
+          <div>
+            <div class="feedback-text" id="feedbackMessage">Correct! Great job! 🚀</div>
+            <div id="feedbackExplanation" style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;"></div>
+          </div>
+          <button class="btn-primary" style="padding: 8px 18px; font-size: 0.95rem;" id="nextBtn" onclick="app.nextQuestion()">
+            Next ➜
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: RESULT SCREEN -->
+    <div id="resultScreen" class="screen">
+      <div class="glass-card">
+        <div class="results-hero">
+          <div style="font-size: 3rem; margin-bottom: 8px;" id="resultIcon">🎉</div>
+          <h2 id="resultTitle">MISSION COMPLETE!</h2>
+          <p id="resultEncouragement" style="color: var(--text-muted); font-size: 1.1rem;">Incredible effort, Young Astronomer!</p>
+          <div class="score-badge" id="resultScore">72 / 80</div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="val" id="resAccuracy">90%</div>
+            <div class="lbl">Accuracy</div>
+          </div>
+          <div class="stat-box">
+            <div class="val" id="resCorrect">72</div>
+            <div class="lbl">Correct</div>
+          </div>
+          <div class="stat-box">
+            <div class="val" id="resMistakes">8</div>
+            <div class="lbl">Mistakes</div>
+          </div>
+          <div class="stat-box">
+            <div class="val" id="resMastered">75</div>
+            <div class="lbl">Mastered</div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+          <button class="btn-primary" id="btnPracticeMistakesResult" onclick="app.practiceMistakes()">
+            🎯 PRACTICE MY MISTAKES (<span id="resPracticeCount">0</span>)
+          </button>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-secondary" style="flex: 1;" onclick="app.restartCurrentSet()">🔄 Retry Round</button>
+            <button class="btn-secondary" style="flex: 1;" onclick="app.showHome()">🌌 Back to Missions</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: MY MISTAKES LOG -->
+    <div id="mistakesScreen" class="screen">
+      <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2>❌ My Mistakes Log</h2>
+          <button class="btn-secondary" onclick="app.showHome()">Back</button>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+          Review questions that gave you trouble. Practice them until they are 100% mastered!
+        </p>
+
+        <div id="mistakesListContainer"></div>
+
+        <div id="emptyMistakesPrompt" style="text-align: center; padding: 40px; display: none;">
+          <div style="font-size: 3rem;">⭐</div>
+          <h3 style="margin-top: 8px;">No Mistakes Recorded!</h3>
+          <p style="color: var(--text-muted);">You're flying smoothly through the cosmos!</p>
+        </div>
+
+        <button class="btn-primary" id="btnStartMistakePractice" style="width: 100%; margin-top: 14px;" onclick="app.practiceMistakes()">
+          🎯 Practice These Mistakes Now
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5: PARENT / TEACHER SUMMARY -->
+    <div id="parentScreen" class="screen">
+      <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2>📊 Space Science Performance Analytics</h2>
+          <button class="btn-secondary" onclick="app.showHome()">Back</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="val" id="ptTotalQuestions">130</div>
+            <div class="lbl">Total Questions</div>
+          </div>
+          <div class="stat-box">
+            <div class="val" id="ptMastered">0</div>
+            <div class="lbl">Mastered</div>
+          </div>
+          <div class="stat-box">
+            <div class="val" id="ptNeedsPractice">0</div>
+            <div class="lbl">Needs Practice</div>
+          </div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px 0; color: var(--accent-yellow); font-size: 1.1rem;">Chapter Breakdown</h3>
+        <div id="chapterPerformanceList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       QUESTION DATABASE (130 QUESTIONS EXACTLY SOURCED)
+       Round 1: 80 Qs (Chapters 1–8)[cite: 2]
+       Round 2: 30 Qs (Telescopes, Orbits, ISRO, Moon, Planets, Rovers)
+       Round 3: 20 Qs (Hard Olympiad)[cite: 1]
+       ========================================================================== */
+    const RAW_QUESTIONS = [
+      // ----------------- ROUND 1: CHAPTER 1 (1-10) -----------------
+      {
+        id: 1, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "Which star helped ancient Egyptians predict flooding of the Nile River?",
+        options: ["Polaris", "Sirius", "Vega", "Betelgeuse"], correctAnswer: 1,
+        explanation: "Sirius was closely watched by ancient Egyptian astronomers to forecast Nile floods."
+      },
+      {
+        id: 2, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "Which Indian astronomer suggested that Earth rotates on its axis?",
+        options: ["Newton", "Galileo", "Aryabhata", "Kepler"], correctAnswer: 2,
+        explanation: "Aryabhata stated that the Earth rotates on its own axis."
+      },
+      {
+        id: 3, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "Who first proposed that Earth orbits the Sun?",
+        options: ["Copernicus", "Newton", "Galileo", "Ptolemy"], correctAnswer: 0,
+        explanation: "Nicolaus Copernicus formulated the model placing the Sun at the center."
+      },
+      {
+        id: 4, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "Galileo discovered four large moons orbiting which planet?",
+        options: ["Mars", "Saturn", "Jupiter", "Earth"], correctAnswer: 2,
+        explanation: "Galileo observed the four largest Galilean moons of Jupiter in 1610."
+      },
+      {
+        id: 5, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "What force keeps planets moving around the Sun?",
+        options: ["Magnetism", "Electricity", "Gravity", "Light"], correctAnswer: 2,
+        explanation: "The Sun's gravitational pull keeps planets in their orbital paths."
+      },
+      {
+        id: 6, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "The closest star to Earth is:",
+        options: ["Sirius", "Polaris", "Alpha Centauri", "The Sun"], correctAnswer: 3,
+        explanation: "The Sun is the closest star to planet Earth."
+      },
+      {
+        id: 7, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "What is the name of our galaxy?",
+        options: ["Andromeda", "Whirlpool", "Milky Way", "Sombrero"], correctAnswer: 2,
+        explanation: "Our Solar System resides inside the Milky Way galaxy."
+      },
+      {
+        id: 8, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "According to the Kármán line, space officially begins near:",
+        options: ["10 km", "50 km", "100 km", "500 km"], correctAnswer: 2,
+        explanation: "The Kármán line is internationally recognized at approximately 100 km altitude."
+      },
+      {
+        id: 9, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "Which scientist formulated the law of universal gravitation?",
+        options: ["Galileo", "Aryabhata", "Newton", "Kepler"], correctAnswer: 2,
+        explanation: "Sir Isaac Newton formulated the Law of Universal Gravitation."
+      },
+      {
+        id: 10, round: "Round 1", chapter: "Chapter 1 — Our Journey Into Space", difficulty: "Standard",
+        question: "What did Kepler discover about planetary orbits?",
+        options: ["They are straight lines", "They are perfect circles", "They are ellipses", "They are spirals"], correctAnswer: 2,
+        explanation: "Kepler discovered that planetary orbits are elliptical rather than circular."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 2 (11-20) -----------------
+      {
+        id: 11, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "What is an orbit?",
+        options: ["The speed of a spacecraft", "The path an object follows around another object", "The distance between two planets", "A layer of atmosphere"], correctAnswer: 1,
+        explanation: "An orbit is a curved path an object takes around a celestial body."
+      },
+      {
+        id: 12, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "What force keeps planets, moons and satellites in orbit?",
+        options: ["Electricity", "Magnetism", "Gravity", "Heat"], correctAnswer: 2,
+        explanation: "Gravity provides the centripetal force that keeps satellites and planets in orbit."
+      },
+      {
+        id: 13, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Why doesn't the Moon simply fall into Earth?",
+        options: ["There is no gravity on the Moon", "The Sun pushes it away", "Its forward motion and Earth's gravity keep it in orbit", "The Moon is outside Earth's gravity"], correctAnswer: 2,
+        explanation: "The Moon's high forward speed balances Earth's gravitational pull."
+      },
+      {
+        id: 14, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Which is a natural satellite?",
+        options: ["GPS satellite", "Weather satellite", "The Moon", "Communication satellite"], correctAnswer: 2,
+        explanation: "The Moon is Earth's only natural satellite."
+      },
+      {
+        id: 15, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "LEO, MEO and GEO are different types of:",
+        options: ["Rockets", "Satellite orbits", "Planets", "Space stations"], correctAnswer: 1,
+        explanation: "LEO (Low), MEO (Medium), and GEO (Geostationary) are Earth satellite orbits."
+      },
+      {
+        id: 16, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Rockets work using which of Newton's laws?",
+        options: ["First Law", "Second Law", "Third Law", "Law of Gravitation"], correctAnswer: 2,
+        explanation: "Newton's Third Law states that every action has an equal and opposite reaction."
+      },
+      {
+        id: 17, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Why are rocket stages dropped during flight?",
+        options: ["To make the rocket heavier", "To reduce weight", "To stop the rocket", "To increase air resistance"], correctAnswer: 1,
+        explanation: "Discarding empty fuel tanks lightens the rocket, making it accelerate faster."
+      },
+      {
+        id: 18, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Which rocket is called the Workhorse of ISRO?",
+        options: ["SLV", "PSLV", "GSLV", "LVM3"], correctAnswer: 1,
+        explanation: "The Polar Satellite Launch Vehicle (PSLV) is known as the workhorse of ISRO."
+      },
+      {
+        id: 19, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Which vehicle is designed to carry heavier spacecraft into higher orbits?",
+        options: ["SLV", "PSLV", "GSLV", "Rohini"], correctAnswer: 2,
+        explanation: "GSLV is designed to lift heavy payloads to higher geostationary transfer orbits."
+      },
+      {
+        id: 20, round: "Round 1", chapter: "Chapter 2 — Orbits, Satellites & Rockets", difficulty: "Standard",
+        question: "Which ISRO launch vehicle carried Chandrayaan-3 into space?",
+        options: ["PSLV", "SSLV", "LVM3", "SLV"], correctAnswer: 2,
+        explanation: "LVM3 (Launch Vehicle Mark 3) successfully launched Chandrayaan-3."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 3 (21-30) -----------------
+      {
+        id: 21, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Who is known as the Father of the Indian Space Program?",
+        options: ["A.P.J. Abdul Kalam", "Vikram Sarabhai", "Rakesh Sharma", "Homi Bhabha"], correctAnswer: 1,
+        explanation: "Dr. Vikram Sarabhai is celebrated as the Father of the Indian Space Program."
+      },
+      {
+        id: 22, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "ISRO was established in:",
+        options: ["1947", "1962", "1969", "1975"], correctAnswer: 2,
+        explanation: "ISRO was formally founded on August 15, 1969."
+      },
+      {
+        id: 23, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "India's first satellite was:",
+        options: ["Rohini", "Aryabhata", "INSAT", "Chandrayaan"], correctAnswer: 1,
+        explanation: "Aryabhata, launched in 1975, was India's first satellite."
+      },
+      {
+        id: 24, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Which rocket is called the Workhorse of ISRO?",
+        options: ["SLV", "GSLV", "PSLV", "LVM3"], correctAnswer: 2,
+        explanation: "PSLV has an outstanding track record of successful launches."
+      },
+      {
+        id: 25, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Which mission provided evidence of water molecules on the Moon?",
+        options: ["Chandrayaan-3", "Chandrayaan-2", "Chandrayaan-1", "Aditya-L1"], correctAnswer: 2,
+        explanation: "Chandrayaan-1 confirmed evidence of water molecules on the lunar surface."
+      },
+      {
+        id: 26, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Which mission successfully landed near the Moon's South Polar region?",
+        options: ["Chandrayaan-1", "Chandrayaan-2", "Chandrayaan-3", "Mangalyaan"], correctAnswer: 2,
+        explanation: "Chandrayaan-3 made a historic soft landing near the lunar South Pole in 2023."
+      },
+      {
+        id: 27, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "What is the popular name of India's Mars Orbiter Mission?",
+        options: ["Aditya", "Gaganyaan", "Mangalyaan", "Rohini"], correctAnswer: 2,
+        explanation: "Mangalyaan is the popular name for India's Mars Orbiter Mission (MOM)."
+      },
+      {
+        id: 28, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Which mission studies the Sun?",
+        options: ["Chandrayaan-3", "Aditya-L1", "Mangalyaan", "Gaganyaan"], correctAnswer: 1,
+        explanation: "Aditya-L1 is India's dedicated solar observatory situated at Lagrange point L1."
+      },
+      {
+        id: 29, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Who was the first Indian in space?",
+        options: ["Kalpana Chawla", "Vikram Sarabhai", "Rakesh Sharma", "Abdul Kalam"], correctAnswer: 2,
+        explanation: "Wing Commander Rakesh Sharma flew aboard Soyuz T-11 in 1984."
+      },
+      {
+        id: 30, round: "Round 1", chapter: "Chapter 3 — India's Space Adventure", difficulty: "Standard",
+        question: "Gaganyaan aims to:",
+        options: ["Land on Mars", "Study the Moon", "Send Indian astronauts into low Earth orbit", "Study asteroids"], correctAnswer: 2,
+        explanation: "Gaganyaan is India's human spaceflight program to Low Earth Orbit."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 4 (31-40) -----------------
+      {
+        id: 31, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "What causes day and night?",
+        options: ["Earth's revolution", "Earth's rotation", "Moon phases", "Earth's seasons"], correctAnswer: 1,
+        explanation: "Earth spinning on its own axis every 24 hours creates day and night."
+      },
+      {
+        id: 32, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "What causes stars to appear to move across the sky each night?",
+        options: ["Earth's rotation", "The Sun's gravity", "The Moon's orbit", "Clouds"], correctAnswer: 0,
+        explanation: "Apparent star movement across the night sky is caused by Earth's rotation."
+      },
+      {
+        id: 33, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "What is the main reason for Earth's changing seasons?",
+        options: ["Distance from the Sun", "Earth's axial tilt", "Moon phases", "Clouds"], correctAnswer: 1,
+        explanation: "Earth's 23.5-degree axial tilt as it revolves around the Sun causes seasons."
+      },
+      {
+        id: 34, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "What is Earth's revolution?",
+        options: ["Earth spinning on its axis", "Earth moving around the Sun", "The Moon moving around Earth", "The Sun moving around Earth"], correctAnswer: 1,
+        explanation: "Revolution refers to Earth's 365.25-day journey around the Sun."
+      },
+      {
+        id: 35, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "Which star helps locate north?",
+        options: ["Sirius", "Polaris", "Betelgeuse", "Vega"], correctAnswer: 1,
+        explanation: "Polaris (the North Star) sits almost directly above the North Pole."
+      },
+      {
+        id: 36, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "What are constellations?",
+        options: ["Planets", "Galaxies", "Patterns of stars", "Satellites"], correctAnswer: 2,
+        explanation: "Constellations are recognizable patterns formed by groups of stars."
+      },
+      {
+        id: 37, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "Which constellation contains Orion's Belt?",
+        options: ["Orion", "Ursa Major", "Scorpius", "Draco"], correctAnswer: 0,
+        explanation: "Orion the Hunter features three bright stars in a row called Orion's Belt."
+      },
+      {
+        id: 38, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "Why do different constellations appear during different seasons?",
+        options: ["The stars move away", "Earth's revolution changes our view of the sky", "The Moon blocks them", "Clouds cover them"], correctAnswer: 1,
+        explanation: "As Earth moves around the Sun, the night side faces different parts of space."
+      },
+      {
+        id: 39, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "Which movement is Earth making when it spins once on its axis?",
+        options: ["Rotation", "Revolution", "Orbit of the Moon", "Precession"], correctAnswer: 0,
+        explanation: "Spinning around its own internal axis is called rotation."
+      },
+      {
+        id: 40, round: "Round 1", chapter: "Chapter 4 — The Changing Sky", difficulty: "Standard",
+        question: "Which statement is correct?",
+        options: ["Rotation causes the year", "Revolution causes day and night", "Rotation causes day and night", "The Moon causes Earth's seasons"], correctAnswer: 2,
+        explanation: "Rotation causes day and night, while revolution causes the annual cycle."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 5 (41-50) -----------------
+      {
+        id: 41, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Why does the Moon appear to shine?",
+        options: ["It produces its own light", "It reflects sunlight", "It contains glowing rocks", "Earth lights it up completely"], correctAnswer: 1,
+        explanation: "The Moon does not produce its own light; it reflects light from the Sun."
+      },
+      {
+        id: 42, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Approximately how long is one complete Moon phase cycle?",
+        options: ["7 days", "14 days", "29.5 days", "365 days"], correctAnswer: 2,
+        explanation: "The lunar synodic cycle lasts approximately 29.5 days."
+      },
+      {
+        id: 43, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Which theory explains how the Moon likely formed?",
+        options: ["Big Bang Theory", "Giant Impact Theory", "Steady State Theory", "Solar Wind Theory"], correctAnswer: 1,
+        explanation: "The Giant Impact Theory suggests a Mars-sized body collided with early Earth."
+      },
+      {
+        id: 44, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "What primarily causes Earth's ocean tides?",
+        options: ["Earth's rotation only", "The Moon's gravity", "Wind", "Clouds"], correctAnswer: 1,
+        explanation: "The gravitational attraction of the Moon pulls on Earth's oceans to create tides."
+      },
+      {
+        id: 45, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Why do we always see the same side of the Moon?",
+        options: ["The Moon does not rotate", "Tidal locking", "Gravity disappears", "The Moon is flat"], correctAnswer: 1,
+        explanation: "Tidal locking synchronizes the Moon's rotation time with its orbit time."
+      },
+      {
+        id: 46, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Does the far side of the Moon always remain dark?",
+        options: ["Yes, it never receives sunlight", "No, it receives sunlight too", "Only during an eclipse", "Only at full Moon"], correctAnswer: 1,
+        explanation: "The far side gets sunlight just like the near side as the Moon orbits."
+      },
+      {
+        id: 47, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "What happens during a solar eclipse?",
+        options: ["Earth blocks the Sun", "Moon blocks the Sun", "Sun blocks the Moon", "Stars block the Sun"], correctAnswer: 1,
+        explanation: "During a solar eclipse, the Moon moves directly between Earth and the Sun."
+      },
+      {
+        id: 48, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "What happens during a lunar eclipse?",
+        options: ["Moon blocks Earth", "Sun blocks Moon", "Earth's shadow falls on the Moon", "Stars block the Moon"], correctAnswer: 2,
+        explanation: "A lunar eclipse happens when Earth passes directly between the Sun and the Moon."
+      },
+      {
+        id: 49, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Which Apollo mission first landed humans on the Moon?",
+        options: ["Apollo 8", "Apollo 10", "Apollo 11", "Apollo 13"], correctAnswer: 2,
+        explanation: "Apollo 11 landed astronauts Neil Armstrong and Buzz Aldrin in July 1969."
+      },
+      {
+        id: 50, round: "Round 1", chapter: "Chapter 5 — The Moon", difficulty: "Standard",
+        question: "Which Chandrayaan mission discovered evidence of water molecules on the Moon?",
+        options: ["Chandrayaan-3", "Apollo 11", "Chandrayaan-1", "Aditya-L1"], correctAnswer: 2,
+        explanation: "Chandrayaan-1's scientific instruments detected water molecules on the lunar surface."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 6 (51-60) -----------------
+      {
+        id: 51, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "What is at the centre of our Solar System?",
+        options: ["Earth", "Jupiter", "The Sun", "The Milky Way"], correctAnswer: 2,
+        explanation: "The Sun sits at the center of the Solar System."
+      },
+      {
+        id: 52, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "About what percentage of the Solar System's mass is in the Sun?",
+        options: ["50%", "75%", "90%", "99.8%"], correctAnswer: 3,
+        explanation: "The Sun contains about 99.8% of all the mass in the Solar System."
+      },
+      {
+        id: 53, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which is the smallest planet?",
+        options: ["Mars", "Mercury", "Venus", "Earth"], correctAnswer: 1,
+        explanation: "Mercury is the smallest of the eight planets in our Solar System."
+      },
+      {
+        id: 54, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which planet has the shortest year?",
+        options: ["Mercury", "Venus", "Earth", "Mars"], correctAnswer: 0,
+        explanation: "Mercury orbits the Sun in just 88 Earth days."
+      },
+      {
+        id: 55, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which planet is known as the Red Planet?",
+        options: ["Venus", "Earth", "Mars", "Jupiter"], correctAnswer: 2,
+        explanation: "Mars appears reddish because of iron oxide (rust) on its surface."
+      },
+      {
+        id: 56, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which is the largest planet?",
+        options: ["Earth", "Saturn", "Neptune", "Jupiter"], correctAnswer: 3,
+        explanation: "Jupiter is by far the largest planet in our Solar System."
+      },
+      {
+        id: 57, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which planet is famous for its rings?",
+        options: ["Mars", "Saturn", "Mercury", "Venus"], correctAnswer: 1,
+        explanation: "Saturn is famous for its bright, spectacular ring system."
+      },
+      {
+        id: 58, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which planet rotates on its side?",
+        options: ["Jupiter", "Neptune", "Uranus", "Earth"], correctAnswer: 2,
+        explanation: "Uranus has an extreme axial tilt of about 98 degrees, spinning on its side."
+      },
+      {
+        id: 59, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which planet is farthest from the Sun?",
+        options: ["Saturn", "Uranus", "Neptune", "Mars"], correctAnswer: 2,
+        explanation: "Neptune is the eighth and outermost recognized major planet."
+      },
+      {
+        id: 60, round: "Round 1", chapter: "Chapter 6 — The Solar System", difficulty: "Standard",
+        question: "Which pair contains only rocky planets?",
+        options: ["Jupiter and Saturn", "Uranus and Neptune", "Earth and Mars", "Saturn and Neptune"], correctAnswer: 2,
+        explanation: "Mercury, Venus, Earth, and Mars are terrestrial (rocky) planets."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 7 (61-70) -----------------
+      {
+        id: 61, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "Which moon of Jupiter is famous for a subsurface ocean beneath an icy crust?",
+        options: ["Titan", "Europa", "Io", "Earth's Moon"], correctAnswer: 1,
+        explanation: "Europa harbors a vast liquid saltwater ocean beneath its icy shell."
+      },
+      {
+        id: 62, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "Which moon has rivers and lakes made of liquid methane?",
+        options: ["Europa", "Ganymede", "Titan", "Io"], correctAnswer: 2,
+        explanation: "Saturn's moon Titan features surface lakes and rivers of liquid hydrocarbons."
+      },
+      {
+        id: 63, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "Which moon is the most volcanically active object in the Solar System?",
+        options: ["Titan", "Europa", "Ganymede", "Io"], correctAnswer: 3,
+        explanation: "Jupiter's moon Io has hundreds of continuously erupting volcanoes."
+      },
+      {
+        id: 64, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "What is the largest moon in the Solar System?",
+        options: ["Titan", "Europa", "Ganymede", "Io"], correctAnswer: 2,
+        explanation: "Ganymede is the largest moon, even larger than the planet Mercury."
+      },
+      {
+        id: 65, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "What causes Io's enormous volcanic activity?",
+        options: ["Its distance from the Sun", "Jupiter's gravitational pull", "Its methane lakes", "Earth's tides"], correctAnswer: 1,
+        explanation: "Tidal gravitational forces from Jupiter constantly stretch and squeeze Io."
+      },
+      {
+        id: 66, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "Where is the main Asteroid Belt?",
+        options: ["Between Earth and Mars", "Between Mars and Jupiter", "Between Jupiter and Saturn", "Beyond Neptune"], correctAnswer: 1,
+        explanation: "The Asteroid Belt is located between Mars and Jupiter."
+      },
+      {
+        id: 67, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "Why are asteroids useful to scientists?",
+        options: ["They produce light", "They are time capsules from the early Solar System", "They control tides", "They are failed stars"], correctAnswer: 1,
+        explanation: "Asteroids preserve pristine chemical material from the early Solar System."
+      },
+      {
+        id: 68, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "What are Near-Earth Asteroids?",
+        options: ["Asteroids that have landed on Earth", "Asteroids whose orbits bring them relatively close to Earth", "Asteroids found only on the Moon", "Asteroids beyond Neptune"], correctAnswer: 1,
+        explanation: "NEAs are asteroids with orbits passing within proximity to Earth's orbit."
+      },
+      {
+        id: 69, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "What causes a comet's tail when it approaches the Sun?",
+        options: ["The comet stops rotating", "Heat releases gas and dust", "Earth pulls the comet apart", "The comet becomes a planet"], correctAnswer: 1,
+        explanation: "Solar heat sublimates comet ices, releasing streams of gas and dust."
+      },
+      {
+        id: 70, round: "Round 1", chapter: "Chapter 7 — Moons, Asteroids & Comets", difficulty: "Standard",
+        question: "A comet's tail points:",
+        options: ["Always toward the Sun", "Always away from the Sun", "Toward Earth", "In the direction of travel"], correctAnswer: 1,
+        explanation: "Solar wind and radiation pressure always push comet tails away from the Sun."
+      },
+
+      // ----------------- ROUND 1: CHAPTER 8 (71-80) -----------------
+      {
+        id: 71, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "What event marked the beginning of the Space Age?",
+        options: ["Apollo 11", "Sputnik 1", "ISS launch", "Mars Rover landing"], correctAnswer: 1,
+        explanation: "The launch of Sputnik 1 in 1957 marked the start of the Space Age."
+      },
+      {
+        id: 72, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Who was the first human in space?",
+        options: ["Neil Armstrong", "Buzz Aldrin", "Yuri Gagarin", "Rakesh Sharma"], correctAnswer: 2,
+        explanation: "Cosmonaut Yuri Gagarin orbited Earth aboard Vostok 1 in 1961."
+      },
+      {
+        id: 73, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Who was the first human to walk on the Moon?",
+        options: ["Yuri Gagarin", "Neil Armstrong", "Buzz Aldrin", "Michael Collins"], correctAnswer: 1,
+        explanation: "Neil Armstrong stepped onto the lunar surface during Apollo 11."
+      },
+      {
+        id: 74, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "What is the ISS?",
+        options: ["A planet", "A space station", "A telescope", "A rocket"], correctAnswer: 1,
+        explanation: "The International Space Station (ISS) is a habitable laboratory in LEO."
+      },
+      {
+        id: 75, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Which is a Mars rover mentioned in the guide?",
+        options: ["Spirit", "Hubble", "Sputnik", "Voyager"], correctAnswer: 0,
+        explanation: "Spirit explored the surface of Mars alongside its twin Opportunity."
+      },
+      {
+        id: 76, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Which NASA rover is collecting samples on Mars for possible future return to Earth?",
+        options: ["Spirit", "Opportunity", "Curiosity", "Perseverance"], correctAnswer: 3,
+        explanation: "Perseverance collects and caches rock and soil core samples in Jezero Crater."
+      },
+      {
+        id: 77, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "What is Hubble used for?",
+        options: ["Mining asteroids", "Studying objects in space", "Launching satellites", "Measuring tides"], correctAnswer: 1,
+        explanation: "The Hubble Space Telescope takes deep astronomical observations from orbit."
+      },
+      {
+        id: 78, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Which telescope studies some of the earliest galaxies?",
+        options: ["Galileo Telescope", "Hubble Telescope", "James Webb Space Telescope", "Kepler Telescope"], correctAnswer: 2,
+        explanation: "The James Webb Space Telescope uses infrared vision to observe ancient galaxies."
+      },
+      {
+        id: 79, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "What are planets orbiting other stars called?",
+        options: ["Dwarf planets", "Exoplanets", "Asteroids", "Satellites"], correctAnswer: 1,
+        explanation: "Planets outside our Solar System orbiting other stars are called exoplanets."
+      },
+      {
+        id: 80, round: "Round 1", chapter: "Chapter 8 — Exploring the Universe", difficulty: "Standard",
+        question: "Who was the first woman of Indian origin in space?",
+        options: ["Sunita Williams", "Kalpana Chawla", "Valentina Tereshkova", "Sally Ride"], correctAnswer: 1,
+        explanation: "Kalpana Chawla was the first woman of Indian origin to fly in space (STS-87)."
+      },
+
+      // ----------------- ROUND 2: ADDITIONAL 30 QUESTIONS (81-110) -----------------
+      {
+        id: 81, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What did Galileo discover on the Moon using his telescope?",
+        options: ["Oceans", "Mountains", "Forests", "Rivers"], correctAnswer: 1,
+        explanation: "Galileo saw craters and rugged mountain peaks on the lunar surface."
+      },
+      {
+        id: 82, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What did Galileo observe on the Sun?",
+        options: ["Sunspots", "Oceans", "Moons", "Rings"], correctAnswer: 0,
+        explanation: "Galileo documented dark blemishes moving across the Sun known as sunspots."
+      },
+      {
+        id: 83, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What are the oval-shaped paths of planets around the Sun called?",
+        options: ["Orbits", "Ellipses", "Circles", "Spirals"], correctAnswer: 1,
+        explanation: "Planetary orbital paths are elliptical (oval-shaped)."
+      },
+      {
+        id: 84, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Why doesn’t the Moon crash into Earth?",
+        options: ["Earth has no gravity", "The Moon is moving forward while gravity pulls it inward", "The Sun holds the Moon up", "The Moon is stationary"], correctAnswer: 1,
+        explanation: "Earth's gravity pulls the Moon inward while forward velocity keeps it in orbit."
+      },
+      {
+        id: 85, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What is the blanket of air surrounding Earth called?",
+        options: ["Biosphere", "Atmosphere", "Stratosphere", "Orbit"], correctAnswer: 1,
+        explanation: "The atmosphere is the envelope of gases held by Earth's gravity."
+      },
+      {
+        id: 86, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which orbit is commonly used by GPS satellites?",
+        options: ["LEO", "MEO", "GEO", "Polar orbit"], correctAnswer: 1,
+        explanation: "Medium Earth Orbit (MEO) is the orbit of choice for GPS constellations."
+      },
+      {
+        id: 87, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which orbit is commonly used by communication satellites and many weather satellites?",
+        options: ["GEO", "LEO", "MEO", "Lunar orbit"], correctAnswer: 0,
+        explanation: "Geostationary Orbit (GEO) allows satellites to stay above one point on Earth."
+      },
+      {
+        id: 88, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What does PSLV stand for?",
+        options: ["Planetary Satellite Launch Vehicle", "Polar Satellite Launch Vehicle", "Primary Space Launch Vehicle", "Planetary Space Lift Vehicle"], correctAnswer: 1,
+        explanation: "PSLV stands for Polar Satellite Launch Vehicle."
+      },
+      {
+        id: 89, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What was India’s first experimental satellite launch vehicle called?",
+        options: ["PSLV", "GSLV", "SLV", "LVM3"], correctAnswer: 2,
+        explanation: "India's first experimental launch vehicle was SLV-3 (Satellite Launch Vehicle)."
+      },
+      {
+        id: 90, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Who was closely associated with India’s early SLV programme?",
+        options: ["Vikram Sarabhai", "Rakesh Sharma", "A.P.J. Abdul Kalam", "Kalpana Chawla"], correctAnswer: 2,
+        explanation: "Dr. A.P.J. Abdul Kalam served as the Project Director for the SLV-3 programme."
+      },
+      {
+        id: 91, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "How long does Earth take to rotate once?",
+        options: ["12 hours", "24 hours", "30 days", "365 days"], correctAnswer: 1,
+        explanation: "Earth completes one full rotation on its axis in approximately 24 hours."
+      },
+      {
+        id: 92, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "When one hemisphere is tilted toward the Sun, what happens to the opposite hemisphere?",
+        options: ["It also has summer", "It tilts away and experiences the opposite season", "Nothing changes", "It experiences an eclipse"], correctAnswer: 1,
+        explanation: "The opposing hemisphere tilts away, receiving less direct sunlight (winter)."
+      },
+      {
+        id: 93, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Why does Polaris appear almost fixed in the sky?",
+        options: ["It does not move at all", "It is located in a direction close to Earth’s North Pole", "It is the brightest star", "It is very close to Earth"], correctAnswer: 1,
+        explanation: "Polaris lies almost along Earth's northern axis of rotation."
+      },
+      {
+        id: 94, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "The Sun generally rises in which direction?",
+        options: ["North", "South", "East", "West"], correctAnswer: 2,
+        explanation: "Due to Earth's counter-clockwise rotation, celestial bodies rise in the East."
+      },
+      {
+        id: 95, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What can a total solar eclipse briefly make daytime look like?",
+        options: ["A bright summer afternoon", "Twilight", "A full Moon", "Sunrise"], correctAnswer: 1,
+        explanation: "A total solar eclipse dims daytime light down to twilight levels."
+      },
+      {
+        id: 96, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Why are some lunar eclipses called Blood Moons?",
+        options: ["The Moon becomes hot", "The Moon can appear reddish", "The Moon disappears", "The Moon turns orange permanently"], correctAnswer: 1,
+        explanation: "Sunlight passing through Earth's atmosphere casts a reddish hue onto the Moon."
+      },
+      {
+        id: 97, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "In which year did Apollo 11 land humans on the Moon?",
+        options: ["1959", "1969", "1979", "1989"], correctAnswer: 1,
+        explanation: "Apollo 11 landed on the Moon on July 20, 1969."
+      },
+      {
+        id: 98, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Why is the Moon’s South Pole especially interesting to scientists?",
+        options: ["It has forests", "Frozen water may exist in permanently shadowed regions", "It is the hottest part of the Moon", "It has an atmosphere"], correctAnswer: 1,
+        explanation: "Permanently shadowed craters at the South Pole harbor reserves of water ice."
+      },
+      {
+        id: 99, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "About how old is the Solar System according to the guide?",
+        options: ["460 million years", "4.6 billion years", "46 billion years", "100 million years"], correctAnswer: 1,
+        explanation: "The Solar System formed roughly 4.6 billion years ago."
+      },
+      {
+        id: 100, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What was the giant cloud of gas and dust from which the Solar System formed called?",
+        options: ["Solar nebula", "Asteroid belt", "Milky Way cloud", "Coma"], correctAnswer: 0,
+        explanation: "The Solar System condensed from a giant rotating cloud called the solar nebula."
+      },
+      {
+        id: 101, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What happened to most of the material at the centre of the forming Solar System?",
+        options: ["It became Earth", "It became the Sun", "It became the Moon", "It disappeared"], correctAnswer: 1,
+        explanation: "Gravity pulled the vast majority of central mass together to form the Sun."
+      },
+      {
+        id: 102, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which planet is the hottest planet according to the guide?",
+        options: ["Mercury", "Venus", "Mars", "Jupiter"], correctAnswer: 1,
+        explanation: "Venus is the hottest planet due to an intense runaway greenhouse effect."
+      },
+      {
+        id: 103, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which planet has some of the fastest winds in the Solar System?",
+        options: ["Saturn", "Uranus", "Neptune", "Mars"], correctAnswer: 2,
+        explanation: "Neptune features ferocious winds reaching over 2,000 km/h."
+      },
+      {
+        id: 104, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which moon is even larger than the planet Mercury?",
+        options: ["Europa", "Titan", "Ganymede", "Io"], correctAnswer: 2,
+        explanation: "Jupiter's moon Ganymede is larger in diameter than the planet Mercury."
+      },
+      {
+        id: 105, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What makes Ganymede unique among moons, according to the guide?",
+        options: ["It has rings", "It has its own magnetic field", "It has liquid oceans on the surface", "It has no gravity"], correctAnswer: 1,
+        explanation: "Ganymede is the only moon in the Solar System known to generate its own magnetic field."
+      },
+      {
+        id: 106, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Is the real Asteroid Belt crowded like it is often shown in movies?",
+        options: ["Yes, asteroids are packed closely together", "No, it is mostly empty space", "It contains only one asteroid", "It contains no space"], correctAnswer: 1,
+        explanation: "The Asteroid Belt contains millions of kilometers of empty space between objects."
+      },
+      {
+        id: 107, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "About how long ago did a giant asteroid strike contribute to the extinction of the dinosaurs?",
+        options: ["6.6 million years ago", "66 million years ago", "660 million years ago", "6 billion years ago"], correctAnswer: 1,
+        explanation: "The Chicxulub asteroid impact occurred approximately 66 million years ago."
+      },
+      {
+        id: 108, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Halley’s Comet returns to the inner Solar System approximately every:",
+        options: ["7 years", "26 years", "76 years", "176 years"], correctAnswer: 2,
+        explanation: "Halley's Comet has an orbital period of approximately 75–76 years."
+      },
+      {
+        id: 109, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "What do Mars rovers do?",
+        options: ["Carry astronauts to Mars", "Travel across the surface, take photographs and collect scientific data", "Bring Mars closer to Earth", "Change Mars’s atmosphere"], correctAnswer: 1,
+        explanation: "Robotic rovers explore the Martian terrain and analyze geological samples."
+      },
+      {
+        id: 110, round: "Round 2", chapter: "Round 2 — Telescopes & Exploration", difficulty: "Challenge",
+        question: "Which four Mars rovers are specifically mentioned in the guide?",
+        options: ["Apollo, Gemini, Mercury and Voyager", "Spirit, Opportunity, Curiosity and Perseverance", "Hubble, Webb, Kepler and Galileo", "Sputnik, Luna, Soyuz and Vostok"], correctAnswer: 1,
+        explanation: "Spirit, Opportunity, Curiosity, and Perseverance are famous NASA Mars rovers."
+      },
+
+      // ----------------- ROUND 3: HARD OLYMPIAD (111-130) -----------------
+      {
+        id: 111, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "If gravity suddenly disappeared, a planet orbiting the Sun would most nearly:",
+        options: ["Stop immediately", "Fall into the Sun", "Move off in a straight-line direction", "Move closer to another planet"], correctAnswer: 2,
+        explanation: "Without gravitational pull, inertia would cause the planet to fly off in a straight line tangent to its orbit."
+      },
+      {
+        id: 112, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which observation gave strong support to the idea that not everything orbits Earth?",
+        options: ["Sunspots", "Jupiter's four large moons", "Moon phases", "A lunar eclipse"], correctAnswer: 1,
+        explanation: "Observing moons orbiting Jupiter proved celestial bodies can orbit centers other than Earth."
+      },
+      {
+        id: 113, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "A satellite remains in orbit because it is:",
+        options: ["Outside gravity", "Continuously falling while moving forward fast enough", "Pushed upward by air", "Pulled equally by every planet"], correctAnswer: 1,
+        explanation: "An orbit is a state of perpetual free-fall where forward speed matches Earth's curvature."
+      },
+      {
+        id: 114, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which combination is correct?",
+        options: ["LEO-GPS navigation", "MEO-many GPS satellites", "GEO-Moon exploration", "LEO-always stationary"], correctAnswer: 1,
+        explanation: "GPS constellations operate within Medium Earth Orbit (MEO)."
+      },
+      {
+        id: 115, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "A geostationary satellite appears almost fixed because its motion:",
+        options: ["Matches Earth's rotation in the same direction", "Is always faster", "Stops completely", "Takes one hour"], correctAnswer: 0,
+        explanation: "GEO satellites match Earth's exact 24-hour rotational period in the same direction."
+      },
+      {
+        id: 116, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which mission best fits the target of studying the Sun?",
+        options: ["Mangalyaan", "Aditya-L1", "Chandrayaan-3", "Gaganyaan"], correctAnswer: 1,
+        explanation: "ISRO's Aditya-L1 is engineered specifically to observe the solar corona and atmosphere."
+      },
+      {
+        id: 117, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which pair is correctly matched?",
+        options: ["Mangalyaan-Moon mission", "Chandrayaan-3-successful lunar landing mission", "Aditya-L1-Mars orbiter", "Gaganyaan-asteroid mission"], correctAnswer: 1,
+        explanation: "Chandrayaan-3 was India's successful lunar soft landing mission."
+      },
+      {
+        id: 118, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Summer is mainly caused by:",
+        options: ["Earth's axial tilt", "The Moon", "Earth stopping rotation", "Clouds"], correctAnswer: 0,
+        explanation: "Axial tilt angles a hemisphere toward the Sun, providing more direct and prolonged sunlight."
+      },
+      {
+        id: 119, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Why can Polaris be useful for navigation?",
+        options: ["It is closest to Earth", "It appears nearly fixed toward the north", "It is hottest", "It rises in the west"], correctAnswer: 1,
+        explanation: "Polaris remains nearly stationary aligned with the Northern celestial pole."
+      },
+      {
+        id: 120, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Different constellations are visible in different seasons mainly because:",
+        options: ["Stars disappear", "Earth changes position as it revolves around the Sun", "The Sun switches them off", "They move closer to Earth"], correctAnswer: 1,
+        explanation: "Earth's orbit positions our night side toward different regions of deep space throughout the year."
+      },
+      {
+        id: 121, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "A lunar eclipse can occur only when:",
+        options: ["Moon is between Earth and Sun", "Earth is between Sun and Moon", "Sun is between Earth and Moon", "Moon produces light"], correctAnswer: 1,
+        explanation: "A lunar eclipse requires Earth to be positioned directly between the Sun and Moon."
+      },
+      {
+        id: 122, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Why is the far side of the Moon not its permanent dark side?",
+        options: ["It never gets sunlight", "It receives sunlight although we usually cannot see it", "It is always in Earth's shadow", "It has no surface"], correctAnswer: 1,
+        explanation: "Both lunar sides experience day and night as the Moon revolves around Earth."
+      },
+      {
+        id: 123, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Tidal locking means the Moon:",
+        options: ["Does not rotate", "Rotates once in the same time it takes to orbit Earth", "Orbits every 24 hours", "Stays in Earth's shadow"], correctAnswer: 1,
+        explanation: "The Moon's rotational period is identical to its orbital revolution period (~27.3 days)."
+      },
+      {
+        id: 124, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Why can Venus be hotter than Mercury?",
+        options: ["Its thick atmosphere traps heat", "It has no atmosphere", "It is larger than the Sun", "Mercury has rings"], correctAnswer: 0,
+        explanation: "Venus has a dense carbon dioxide atmosphere producing a strong greenhouse effect."
+      },
+      {
+        id: 125, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which pair is correctly matched?",
+        options: ["Uranus-rotates on its side", "Neptune-closest to Sun", "Saturn-smallest planet", "Mars-largest planet"], correctAnswer: 0,
+        explanation: "Uranus has an axial tilt of ~98°, making it rotate almost sideways."
+      },
+      {
+        id: 126, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which pair is correctly matched?",
+        options: ["Europa-methane lakes", "Titan-subsurface ocean beneath icy crust", "Io-extreme volcanic activity", "Ganymede-smallest moon"], correctAnswer: 2,
+        explanation: "Io experiences continuous volcanic eruptions fueled by Jupiter's tidal forces."
+      },
+      {
+        id: 127, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "A spacecraft travelling through the main Asteroid Belt would most likely find:",
+        options: ["Asteroids packed closely together", "A great deal of empty space", "Every asteroid has an atmosphere", "All asteroids are identical"], correctAnswer: 1,
+        explanation: "The average distance between sizable asteroids is measured in hundreds of thousands of kilometers."
+      },
+      {
+        id: 128, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Why does a comet's tail point away from the Sun?",
+        options: ["It travels backward", "Released material is pushed away from the Sun", "Earth pulls it outward", "The tail is permanent"], correctAnswer: 1,
+        explanation: "Radiation pressure and the solar wind continually push evaporated gases away from the Sun."
+      },
+      {
+        id: 129, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "Which sequence is correct?",
+        options: [
+          "Sputnik 1 → first human in space → first Moon walk",
+          "Moon walk → Sputnik 1 → first human",
+          "First human → Sputnik 1 → Moon walk",
+          "ISS → Sputnik 1 → Moon walk"
+        ],
+        correctAnswer: 0,
+        explanation: "Chronology: Sputnik 1 (1957) → Yuri Gagarin (1961) → Apollo 11 Moon Walk (1969)."
+      },
+      {
+        id: 130, round: "Round 3", chapter: "Round 3 — Hard Olympiad Challenge", difficulty: "Olympiad",
+        question: "If a planet orbits a star other than the Sun, it is called:",
+        options: ["Satellite", "Exoplanet", "Asteroid", "Comet"], correctAnswer: 1,
+        explanation: "An extrasolar planet (exoplanet) is any planet orbiting an external star."
+      }
+    ];
+
+    /* ==========================================================================
+       SYNTHESIZED AUDIO ENGINE (Web Audio API)
+       ========================================================================== */
+    class AudioFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      }
+      playTone(freq, type, duration, delay = 0) {
+        if (!this.enabled) return;
+        this.init();
+        setTimeout(() => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+          } catch(e) {}
+        }, delay * 1000);
+      }
+      playCorrect() {
+        this.playTone(523.25, 'sine', 0.15, 0);     // C5
+        this.playTone(659.25, 'sine', 0.15, 0.08);  // E5
+        this.playTone(783.99, 'sine', 0.25, 0.16);  // G5
+        this.playTone(1046.50, 'sine', 0.35, 0.24); // C6
+      }
+      playWrong() {
+        this.playTone(220, 'triangle', 0.18, 0);
+        this.playTone(185, 'triangle', 0.25, 0.12);
+      }
+      playComplete() {
+        const notes = [440, 554.37, 659.25, 880];
+        notes.forEach((n, i) => this.playTone(n, 'triangle', 0.3, i * 0.1));
+      }
+    }
+
+    /* ==========================================================================
+       QUIZ APPLICATION STATE & ENGINE
+       ========================================================================== */
+    class SpaceQuizApp {
+      constructor(questions) {
+        this.questions = questions;
+        this.audio = new AudioFX();
+        
+        // Active Quiz Session
+        this.activeQueue = [];
+        this.currentIndex = 0;
+        this.currentQuestion = null;
+        this.score = 0;
+        this.mistakesThisRun = 0;
+        this.activeAttemptsOnCurrent = 0;
+        this.isPracticeMode = false;
+        this.currentContextTitle = "";
+
+        // Persistence Data Store
+        this.userData = {
+          mistakes: {}, // id: { question, yourAnswer, correctAnswer, attempts, chapter, round }
+          mastered: {}, // id: true
+          chapterStats: {} // chapter: { attempts: 0, correct: 0 }
+        };
+
+        this.loadState();
+        this.initDOM();
+      }
+
+      initDOM() {
+        this.renderChapterChips();
+        this.updateMistakeBadge();
+      }
+
+      /* Storage */
+      loadState() {
+        const saved = localStorage.getItem('INACC_SPACE_QUIZ_USER_DATA');
+        if (saved) {
+          try {
+            this.userData = JSON.parse(saved);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+
+      saveState() {
+        localStorage.setItem('INACC_SPACE_QUIZ_USER_DATA', JSON.stringify(this.userData));
+        this.updateMistakeBadge();
+      }
+
+      resetProgress() {
+        if (confirm("Are you sure you want to reset all your score, mistakes, and mastered badges?")) {
+          this.userData = { mistakes: {}, mastered: {}, chapterStats: {} };
+          this.saveState();
+          alert("Progress reset successfully!");
+          this.showHome();
+        }
+      }
+
+      toggleSound() {
+        this.audio.enabled = !this.audio.enabled;
+        const btn = document.getElementById('soundToggle');
+        btn.textContent = this.audio.enabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+      }
+
+      updateMistakeBadge() {
+        const count = Object.keys(this.userData.mistakes).length;
+        document.getElementById('mistakeBadgeCount').textContent = count;
+      }
+
+      /* Screen Switching */
+      showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      showHome() {
+        this.showScreen('homeScreen');
+      }
+
+      renderChapterChips() {
+        const container = document.getElementById('chapterChips');
+        const chapters = [
+          "Chapter 1 — Our Journey Into Space",
+          "Chapter 2 — Orbits, Satellites & Rockets",
+          "Chapter 3 — India's Space Adventure",
+          "Chapter 4 — The Changing Sky",
+          "Chapter 5 — The Moon",
+          "Chapter 6 — The Solar System",
+          "Chapter 7 — Moons, Asteroids & Comets",
+          "Chapter 8 — Exploring the Universe"
+        ];
+        container.innerHTML = "";
+        chapters.forEach((chap, idx) => {
+          const btn = document.createElement('button');
+          btn.className = "chip-btn";
+          btn.innerHTML = `🪐 Ch ${idx + 1}: ${chap.split('—')[1] || chap}`;
+          btn.onclick = () => this.startQuiz(chap);
+          container.appendChild(btn);
+        });
+      }
+
+      /* Quiz Initializers */
+      startQuiz(filterKey) {
+        this.isPracticeMode = false;
+        this.currentContextTitle = filterKey;
+        
+        let pool = [];
+        if (filterKey.startsWith("Round")) {
+          pool = this.questions.filter(q => q.round === filterKey);
+        } else if (filterKey.startsWith("Chapter")) {
+          pool = this.questions.filter(q => q.chapter === filterKey);
+        } else {
+          pool = [...this.questions];
+        }
+
+        this.startSession(pool);
+      }
+
+      practiceMistakes() {
+        const mistakeIds = Object.keys(this.userData.mistakes).map(Number);
+        if (mistakeIds.length === 0) {
+          alert("🎉 You don't have any mistakes recorded! Excellent job!");
+          return;
+        }
+
+        this.isPracticeMode = true;
+        this.currentContextTitle = "🎯 Practice My Mistakes";
+        let pool = this.questions.filter(q => mistakeIds.includes(q.id));
+        // Shuffle practice questions
+        pool.sort(() => Math.random() - 0.5);
+        this.startSession(pool);
+      }
+
+      restartCurrentSet() {
+        if (this.isPracticeMode) {
+          this.practiceMistakes();
+        } else {
+          this.startQuiz(this.currentContextTitle);
+        }
+      }
+
+      startSession(questionList) {
+        this.activeQueue = questionList.map(q => {
+          // Clone and shuffle options while preserving the correct answer index
+          const optionsWithIdx = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correctAnswer }));
+          optionsWithIdx.sort(() => Math.random() - 0.5);
+          return {
+            id: q.id,
+            chapter: q.chapter,
+            round: q.round,
+            difficulty: q.difficulty,
+            question: q.question,
+            options: optionsWithIdx.map(o => o.text),
+            correctAnswer: optionsWithIdx.findIndex(o => o.isCorrect),
+            explanation: q.explanation
+          };
+        });
+
+        this.currentIndex = 0;
+        this.score = 0;
+        this.mistakesThisRun = 0;
+        this.showScreen('quizScreen');
+        this.renderCurrentQuestion();
+      }
+
+      /* Question Rendering & Logic */
+      renderCurrentQuestion() {
+        this.activeAttemptsOnCurrent = 0;
+        this.currentQuestion = this.activeQueue[this.currentIndex];
+
+        // Header and counter updates
+        document.getElementById('quizContextBadge').textContent = this.currentContextTitle;
+        document.getElementById('quizScoreBadge').textContent = `⭐ Score: ${this.score}`;
+        document.getElementById('questionCounter').textContent = `Question ${this.currentIndex + 1} of ${this.activeQueue.length}`;
+        document.getElementById('mistakeCounter').textContent = `Mistakes this run: ${this.mistakesThisRun}`;
+        
+        const progressPct = ((this.currentIndex) / this.activeQueue.length) * 100;
+        document.getElementById('progressBar').style.width = `${progressPct}%`;
+
+        // Hide Feedback
+        const feedback = document.getElementById('feedbackBox');
+        feedback.className = "feedback-box";
+        feedback.style.display = "none";
+
+        // Set Question Text
+        document.getElementById('questionText').textContent = this.currentQuestion.question;
+
+        // Render Answer Option Cards
+        const optContainer = document.getElementById('optionsContainer');
+        optContainer.innerHTML = "";
+        const labels = ["A", "B", "C", "D"];
+
+        this.currentQuestion.options.forEach((opt, idx) => {
+          const card = document.createElement('div');
+          card.className = "option-card";
+          card.id = `opt-${idx}`;
+          card.innerHTML = `
+            <span><strong>${labels[idx]}.</strong> ${opt}</span>
+            <span class="opt-icon" id="icon-${idx}"></span>
+          `;
+          card.onclick = () => this.handleOptionSelect(idx);
+          optContainer.appendChild(card);
+        });
+      }
+
+      handleOptionSelect(selectedIndex) {
+        const q = this.currentQuestion;
+        const card = document.getElementById(`opt-${selectedIndex}`);
+        const icon = document.getElementById(`icon-${selectedIndex}`);
+        const feedback = document.getElementById('feedbackBox');
+        const feedbackMsg = document.getElementById('feedbackMessage');
+        const feedbackExp = document.getElementById('feedbackExplanation');
+
+        // Prevent clicking if already completed
+        if (card.classList.contains('correct') || card.classList.contains('disabled')) return;
+
+        this.activeAttemptsOnCurrent++;
+
+        // Update Global Chapter Stats
+        if (!this.userData.chapterStats[q.chapter]) {
+          this.userData.chapterStats[q.chapter] = { attempts: 0, correct: 0 };
+        }
+        this.userData.chapterStats[q.chapter].attempts++;
+
+        if (selectedIndex === q.correctAnswer) {
+          /* --- CORRECT SELECTION --- */
+          this.audio.playCorrect();
+          card.classList.add('correct');
+          icon.textContent = "✓";
+
+          // Disable other cards
+          document.querySelectorAll('.option-card').forEach((c, i) => {
+            if (i !== selectedIndex) c.classList.add('disabled');
+          });
+
+          this.userData.chapterStats[q.chapter].correct++;
+
+          // Award score only if solved on first try during this run
+          if (this.activeAttemptsOnCurrent === 1) {
+            this.score++;
+          }
+
+          // If in mistake practice mode, remove from mistake log upon correct answer
+          if (this.isPracticeMode || this.userData.mistakes[q.id]) {
+            delete this.userData.mistakes[q.id];
+            this.userData.mastered[q.id] = true;
+          } else if (this.activeAttemptsOnCurrent === 1) {
+            this.userData.mastered[q.id] = true;
+          }
+
+          this.saveState();
+
+          // Show positive message
+          const cheerMessages = [
+            "Correct! Great job! 🚀",
+            "Brilliant! Keep soaring! 🌟",
+            "Mission successful! 🛰️",
+            "Spot on, Space Explorer! 🌌",
+            "You nailed it! 🎉"
+          ];
+          feedback.className = "feedback-box correct";
+          feedbackMsg.textContent = cheerMessages[Math.floor(Math.random() * cheerMessages.length)];
+          feedbackExp.textContent = q.explanation ? `💡 ${q.explanation}` : "";
+          feedback.style.display = "flex";
+
+        } else {
+          /* --- INCORRECT SELECTION --- */
+          this.audio.playWrong();
+          card.classList.add('wrong');
+          icon.textContent = "✗";
+          this.mistakesThisRun++;
+          document.getElementById('mistakeCounter').textContent = `Mistakes this run: ${this.mistakesThisRun}`;
+
+          // Log mistake into persistent user state (without revealing correct answer)
+          if (!this.userData.mistakes[q.id]) {
+            this.userData.mistakes[q.id] = {
+              id: q.id,
+              question: q.question,
+              selectedWrong: q.options[selectedIndex],
+              correctAnswer: q.options[q.correctAnswer],
+              attempts: 1,
+              chapter: q.chapter,
+              round: q.round
+            };
+          } else {
+            this.userData.mistakes[q.id].attempts++;
+          }
+          this.saveState();
+
+          // Gentle feedback encouraging retry
+          const gentleMessages = [
+            "Not quite! Try again. 🔭",
+            "Almost! Think carefully and try again. 🪐",
+            "Good try! You can do it! 🚀",
+            "Check again! Take your time. ⭐"
+          ];
+          feedback.className = "feedback-box wrong";
+          feedbackMsg.textContent = gentleMessages[Math.floor(Math.random() * gentleMessages.length)];
+          feedbackExp.textContent = "Try picking another answer option!";
+          feedback.style.display = "flex";
+        }
+      }
+
+      nextQuestion() {
+        this.currentIndex++;
+        if (this.currentIndex < this.activeQueue.length) {
+          this.renderCurrentQuestion();
+        } else {
+          this.showResults();
+        }
+      }
+
+      /* Results */
+      showResults() {
+        this.audio.playComplete();
+        const total = this.activeQueue.length;
+        const accuracy = Math.max(0, Math.round(((total - this.mistakesThisRun) / total) * 100));
+        const mistakesCount = Object.keys(this.userData.mistakes).length;
+        const masteredCount = Object.keys(this.userData.mastered).length;
+
+        document.getElementById('progressBar').style.width = `100%`;
+        document.getElementById('resultScore').textContent = `${this.score} / ${total}`;
+        document.getElementById('resAccuracy').textContent = `${accuracy}%`;
+        document.getElementById('resCorrect').textContent = this.score;
+        document.getElementById('resMistakes').textContent = this.mistakesThisRun;
+        document.getElementById('resMastered').textContent = masteredCount;
+        document.getElementById('resPracticeCount').textContent = mistakesCount;
+
+        const btnPractice = document.getElementById('btnPracticeMistakesResult');
+        btnPractice.style.display = mistakesCount > 0 ? "block" : "none";
+
+        const title = document.getElementById('resultTitle');
+        const enc = document.getElementById('resultEncouragement');
+        const icon = document.getElementById('resultIcon');
+
+        if (accuracy >= 90) {
+          icon.textContent = "🏆";
+          title.textContent = "STELLAR ASTRONOMER!";
+          enc.textContent = "Outstanding mastery across the universe!";
+        } else if (accuracy >= 70) {
+          icon.textContent = "🚀";
+          title.textContent = "MISSION ACCOMPLISHED!";
+          enc.textContent = "Great flight! Practice a few tricky spots to become unstoppable.";
+        } else {
+          icon.textContent = "🔭";
+          title.textContent = "CADET IN TRAINING!";
+          enc.textContent = "Every astronomer learns through exploration. Let's retry mistakes!";
+        }
+
+        this.showScreen('resultScreen');
+      }
+
+      /* Mistakes View */
+      showMistakes() {
+        const list = document.getElementById('mistakesListContainer');
+        const emptyPrompt = document.getElementById('emptyMistakesPrompt');
+        const btnPractice = document.getElementById('btnStartMistakePractice');
+        const mistakeEntries = Object.values(this.userData.mistakes);
+
+        list.innerHTML = "";
+
+        if (mistakeEntries.length === 0) {
+          emptyPrompt.style.display = "block";
+          btnPractice.style.display = "none";
+        } else {
+          emptyPrompt.style.display = "none";
+          btnPractice.style.display = "block";
+
+          mistakeEntries.forEach(m => {
+            const card = document.createElement('div');
+            card.className = "mistake-card";
+            card.innerHTML = `
+              <div class="mistake-card-header">
+                <span>📍 ${m.chapter}</span>
+                <span>Attempts: ${m.attempts}</span>
+              </div>
+              <div class="mistake-q">${m.question}</div>
+              <div class="mistake-answers">
+                <div class="ans-wrong-pill">✗ Last Wrong: ${m.selectedWrong}</div>
+                <div class="ans-correct-pill">✓ Target: ${m.correctAnswer}</div>
+              </div>
+            `;
+            list.appendChild(card);
+          });
+        }
+
+        this.showScreen('mistakesScreen');
+      }
+
+      /* Teacher & Parent Analytics */
+      showParentSummary() {
+        const totalQs = this.questions.length;
+        const mastered = Object.keys(this.userData.mastered).length;
+        const needsPractice = Object.keys(this.userData.mistakes).length;
+
+        document.getElementById('ptTotalQuestions').textContent = totalQs;
+        document.getElementById('ptMastered').textContent = mastered;
+        document.getElementById('ptNeedsPractice').textContent = needsPractice;
+
+        const container = document.getElementById('chapterPerformanceList');
+        container.innerHTML = "";
+
+        const allChapters = [...new Set(this.questions.map(q => q.chapter))];
+
+        allChapters.forEach(chap => {
+          const stats = this.userData.chapterStats[chap] || { attempts: 0, correct: 0 };
+          const acc = stats.attempts > 0 ? Math.round((stats.correct / stats.attempts) * 100) : 0;
+
+          const row = document.createElement('div');
+          row.style.background = "rgba(255,255,255,0.04)";
+          row.style.border = "1px solid var(--card-border)";
+          row.style.borderRadius = "10px";
+          row.style.padding = "12px 16px";
+          row.style.marginBottom = "8px";
+          row.style.display = "flex";
+          row.style.justifyContent = "space-between";
+          row.style.alignItems = "center";
+
+          row.innerHTML = `
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">${chap}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Answered: ${stats.correct} / ${stats.attempts} attempts</div>
+            </div>
+            <div style="font-weight: 800; font-size: 1.1rem; color: ${acc >= 75 ? 'var(--accent-green)' : (acc >= 50 ? 'var(--accent-yellow)' : '#f87171')};">
+              ${stats.attempts > 0 ? acc + '%' : 'Not Attempted'}
+            </div>
+          `;
+          container.appendChild(row);
+        });
+
+        this.showScreen('parentScreen');
+      }
+    }
+
+    // Initialize App
+    const app = new SpaceQuizApp(RAW_QUESTIONS);
+  </script>
+</body>
+</html>
