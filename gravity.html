@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Empirical Gravity &amp; Pendulum Laboratory</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #070d1e;
+      color: #e2e8f0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .mono-font {
+      font-family: 'Space Grotesk', monospace;
+    }
+    /* Custom styled scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b132b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    /* Custom slider track & thumb */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #1e293b;
+      border-radius: 9999px;
+      height: 8px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4cc9f0;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(76, 201, 240, 0.6);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 20px rgba(76, 201, 240, 0.25);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    canvas {
+      touch-action: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+  <!-- TOP HEADER & BRANDING BAR -->
+  <header class="glass-card border-b border-slate-800 px-4 md:px-8 py-3.5 flex items-center justify-between z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-atom text-xl animate-spin-slow"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="mono-font text-xl font-bold tracking-wider text-white">Gravity</span>
+          <span class="bg-indigo-500/20 text-indigo-300 text-[11px] font-bold px-2 py-0.5 rounded-full border border-indigo-500/30">DEMO LAB</span>
+        </div>
+        <p class="text-xs text-slate-400 font-medium hidden sm:block">Module A: Inquiry-Driven Pendulum &amp; Planetary Gravity</p>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Badges -->
+    <div class="flex items-center gap-2 md:gap-4 text-xs">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-slate-400 hidden sm:inline">Physics Engine:</span>
+        <span class="mono-font font-bold text-emerald-300" id="fpsCounter">60 FPS</span>
+      </div>
+      <div class="bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+        <i class="fa-solid fa-stopwatch text-cyan-400"></i>
+        <span class="text-slate-400 hidden sm:inline">Oscillations:</span>
+        <span class="mono-font font-bold text-cyan-300" id="oscCountBadge">0</span>
+      </div>
+      <button id="soundToggleBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-lg transition-all" title="Toggle Audio Chime">
+        <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN INTERACTIVE WORKSPACE -->
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 md:p-6 max-w-[1700px] w-full mx-auto">
+    
+    <!-- LEFT PANEL: Controls, Sliders & Preset Selector (4 cols) -->
+    <section class="lg:col-span-4 flex flex-col gap-4 order-2 lg:order-1">
+      
+      <!-- Planetary Gravity Card -->
+      <div class="glass-card rounded-2xl p-4 md:p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-globe text-cyan-400"></i>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">Planetary Gravity Preset</h3>
+          </div>
+          <span class="mono-font text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-cyan-300" id="currentPlanetLabel">Earth (9.80 m/s²)</span>
+        </div>
+
+        <!-- Preset Buttons Grid -->
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4" id="planetPresets">
+          <button data-g="1.62" data-name="Moon" class="preset-btn flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition-all text-center">
+            <span class="text-lg">🌑</span>
+            <span class="text-[11px] font-semibold text-slate-200 mt-1">Moon</span>
+            <span class="text-[9px] mono-font text-slate-400">1.6 m/s²</span>
+          </button>
+          <button data-g="3.72" data-name="Mars" class="preset-btn flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition-all text-center">
+            <span class="text-lg">🔴</span>
+            <span class="text-[11px] font-semibold text-slate-200 mt-1">Mars</span>
+            <span class="text-[9px] mono-font text-slate-400">3.7 m/s²</span>
+          </button>
+          <button data-g="9.81" data-name="Earth" class="preset-btn active-preset ring-2 ring-cyan-400 flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/90 border border-cyan-400/50 transition-all text-center">
+            <span class="text-lg">🌍</span>
+            <span class="text-[11px] font-semibold text-white mt-1">Earth</span>
+            <span class="text-[9px] mono-font text-cyan-300">9.8 m/s²</span>
+          </button>
+          <button data-g="24.79" data-name="Jupiter" class="preset-btn flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition-all text-center">
+            <span class="text-lg">🪐</span>
+            <span class="text-[11px] font-semibold text-slate-200 mt-1">Jupiter</span>
+            <span class="text-[9px] mono-font text-slate-400">24.8 m/s²</span>
+          </button>
+          <button data-g="0.5" data-name="Deep Space" class="preset-btn flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition-all text-center">
+            <span class="text-lg">🛸</span>
+            <span class="text-[11px] font-semibold text-slate-200 mt-1">Space</span>
+            <span class="text-[9px] mono-font text-slate-400">0.5 m/s²</span>
+          </button>
+        </div>
+
+        <!-- Custom Gravity Slider -->
+        <div>
+          <div class="flex justify-between items-center text-xs mb-1.5">
+            <span class="text-slate-400">Fine-tune Gravity (g)</span>
+            <span class="mono-font font-bold text-cyan-300" id="gravityVal">9.81 m/s²</span>
+          </div>
+          <input type="range" id="gravitySlider" min="0.5" max="30.0" step="0.1" value="9.81" class="w-full">
+        </div>
+      </div>
+
+      <!-- Physical Parameters Card (Length & Mass) -->
+      <div class="glass-card rounded-2xl p-4 md:p-5 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-ruler-combined text-indigo-400"></i>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">Pendulum Parameters</h3>
+          </div>
+          <span class="text-xs text-slate-400 font-medium">Empirical Sliders</span>
+        </div>
+
+        <!-- String Length Slider -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span class="text-slate-300 font-medium flex items-center gap-1.5">
+              <i class="fa-solid fa-arrows-up-down text-indigo-400"></i> String Length (L)
+            </span>
+            <span class="mono-font font-bold text-indigo-300 text-sm" id="lengthVal">1.50 m</span>
+          </div>
+          <input type="range" id="lengthSlider" min="0.5" max="3.0" step="0.05" value="1.50" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+            <span>0.5m (Short)</span>
+            <span>3.0m (Long)</span>
+          </div>
+        </div>
+
+        <!-- Bob Mass Slider -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span class="text-slate-300 font-medium flex items-center gap-1.5">
+              <i class="fa-solid fa-weight-hanging text-fuchsia-400"></i> Bob Mass (m)
+            </span>
+            <span class="mono-font font-bold text-fuchsia-300 text-sm" id="massVal">1.00 kg</span>
+          </div>
+          <input type="range" id="massSlider" min="0.1" max="5.0" step="0.1" value="1.00" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+            <span>0.1kg (Light)</span>
+            <span>5.0kg (Heavy)</span>
+          </div>
+        </div>
+
+        <!-- Friction / Damping Toggle -->
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-wind text-sky-400 text-sm"></i>
+            <div>
+              <p class="text-xs font-semibold text-slate-200">Air Resistance</p>
+              <p class="text-[10px] text-slate-400">Simulate atmospheric damping</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="dampingToggle" class="sr-only peer">
+            <div class="w-10 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Socratic Guide Card (Professor Hoot / Science Companion) -->
+      <div class="glass-card rounded-2xl p-4 md:p-5 border-l-4 border-l-amber-400 bg-gradient-to-r from-amber-950/20 to-slate-900/60">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-xs">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300">Professor Hoot's Discovery Quest</h4>
+            <p class="text-[10px] text-slate-400">Socratic Guided Experimentation</p>
+          </div>
+        </div>
+        
+        <p class="text-xs text-slate-200 leading-relaxed mb-3" id="socraticPromptText">
+          "Welcome voyager! <b>Experiment 1:</b> Does a heavier bob swing faster than a lighter bob? Double the mass slider and watch what happens to the period (T)!"
+        </p>
+
+        <!-- Discovery Experiment Quick Tabs -->
+        <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+          <button id="exp1Btn" class="py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 font-semibold text-center border border-amber-500/30 transition-all">
+            Exp 1: Mass?
+          </button>
+          <button id="exp2Btn" class="py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-center border border-slate-700 transition-all">
+            Exp 2: Length?
+          </button>
+          <button id="exp3Btn" class="py-1.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-center border border-slate-700 transition-all">
+            Exp 3: Gravity?
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT/CENTER PANEL: Interactive Physics Canvas & Empirical Data Log (8 cols) -->
+    <section class="lg:col-span-8 flex flex-col gap-4 order-1 lg:order-2">
+      
+      <!-- Canvas Wrapper -->
+      <div class="glass-card rounded-2xl p-3 md:p-4 relative flex flex-col items-center justify-center overflow-hidden">
+        
+        <!-- Top Toolbar inside canvas -->
+        <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
+          <div class="pointer-events-auto bg-slate-900/85 backdrop-blur border border-slate-800/80 rounded-xl px-3 py-1.5 flex items-center gap-3 text-xs">
+            <span class="text-slate-400">Release Angle:</span>
+            <span class="mono-font font-bold text-cyan-300" id="angleDisplay">25.0°</span>
+          </div>
+
+          <div class="pointer-events-auto flex items-center gap-2 bg-slate-900/85 backdrop-blur border border-slate-800/80 p-1 rounded-xl">
+            <button id="playPauseBtn" class="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center transition-all shadow-md shadow-indigo-600/30">
+              <i class="fa-solid fa-pause text-xs" id="playPauseIcon"></i>
+            </button>
+            <button id="slowMoBtn" class="px-2.5 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1 transition-all">
+              <i class="fa-solid fa-gauge-simple-high text-[10px]"></i>
+              <span id="speedLabel">1.0x</span>
+            </button>
+            <button id="resetBtn" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all">
+              <i class="fa-solid fa-rotate-left text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- The Canvas -->
+        <div class="w-full relative flex items-center justify-center" style="height: 420px;" id="canvasContainer">
+          <canvas id="pendulumCanvas" class="w-full h-full rounded-xl cursor-grab active:cursor-grabbing"></canvas>
+          
+          <!-- Hint overlay for touch/drag -->
+          <div id="dragHint" class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none bg-slate-900/90 border border-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-xl animate-bounce">
+            <i class="fa-solid fa-hand-pointer text-cyan-400"></i>
+            <span>Drag the glowing bob to release at any angle!</span>
+          </div>
+        </div>
+
+        <!-- Over-Canvas Theoretical vs Empirical Banner -->
+        <div class="w-full grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 pt-3 border-t border-slate-800/80 text-center">
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Theoretical Period (<span class="font-serif italic">T</span>)</p>
+            <p class="mono-font text-base md:text-lg font-bold text-cyan-400" id="theoryPeriod">2.46 s</p>
+            <p class="text-[9px] text-slate-500 font-mono">T = 2π√(L/g)</p>
+          </div>
+
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Empirical Live Period</p>
+            <p class="mono-font text-base md:text-lg font-bold text-emerald-400" id="livePeriod">Measuring...</p>
+            <p class="text-[9px] text-slate-500 font-mono">Peak-to-peak sensor</p>
+          </div>
+
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Max Velocity (v)</p>
+            <p class="mono-font text-base md:text-lg font-bold text-fuchsia-400" id="velocityDisplay">0.00 m/s</p>
+            <p class="text-[9px] text-slate-500 font-mono">at lowest arc point</p>
+          </div>
+
+          <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-center">
+            <button id="logTrialBtn" class="w-full py-2 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold text-xs rounded-lg transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span>Log Trial Data</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empirical Observation Table (Scientific Inquiry Tracking) -->
+      <div class="glass-card rounded-2xl p-4 md:p-5 flex-1 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-table-list text-cyan-400"></i>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">Empirical Trials Log</h3>
+            <span class="text-xs text-slate-400">(Student Science Notebook)</span>
+          </div>
+          <button id="clearTrialsBtn" class="text-xs text-slate-400 hover:text-rose-400 transition-colors">
+            <i class="fa-solid fa-trash-can mr-1"></i>Clear Table
+          </button>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-2.5 px-3">Trial</th>
+                <th class="py-2.5 px-3">Planet / Env</th>
+                <th class="py-2.5 px-3">Length (L)</th>
+                <th class="py-2.5 px-3">Mass (m)</th>
+                <th class="py-2.5 px-3">Gravity (g)</th>
+                <th class="py-2.5 px-3">Observed Period (T)</th>
+                <th class="py-2.5 px-3">Formula T</th>
+              </tr>
+            </thead>
+            <tbody id="trialsTableBody" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+              <tr class="text-slate-500 text-center italic py-4">
+                <td colspan="7" class="py-4 font-sans">No trials logged yet. Change sliders and click "Log Trial Data" above!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Educational Takeaway Summary Banner -->
+        <div class="mt-3 p-2.5 rounded-xl bg-indigo-950/30 border border-indigo-900/40 flex items-center justify-between text-xs">
+          <span class="text-slate-300">
+            <b class="text-indigo-400">Empirical Conclusion:</b> The period depends <i>only</i> on string length (<b>L</b>) and gravity (<b>g</b>). Mass (<b>m</b>) cancels out!
+          </span>
+          <span class="bg-indigo-500/20 text-indigo-300 font-bold px-2 py-0.5 rounded text-[10px] hidden md:inline">NEP-2020 Inquiry Skill</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- PENDULUM SIMULATION LOGIC -->
+  <script>
+    // --- Simulation State & Physics Parameters ---
+    const state = {
+      // Physical properties
+      length: 1.5,      // meters
+      mass: 1.0,        // kg
+      gravity: 9.81,    // m/s^2
+      damping: 0.0,     // air resistance factor
+      
+      // Dynamic variables
+      theta: 25 * (Math.PI / 180),   // angle in radians (from downward vertical)
+      omega: 0.0,                    // angular velocity (rad/s)
+      alpha: 0.0,                    // angular acceleration (rad/s^2)
+      
+      // Simulation controls
+      isRunning: true,
+      timeScale: 1.0,   // for slow-mo
+      isDragging: false,
+      soundEnabled: true,
+      
+      // Period measurement
+      lastZeroCrossTime: 0,
+      prevSign: 0,
+      observedPeriods: [],
+      currentEmpiricalPeriod: null,
+      maxVelocity: 0,
+      
+      // Trial records
+      trials: [],
+      trialCount: 0,
+      planetName: 'Earth'
+    };
+
+    // --- DOM Elements ---
+    const canvas = document.getElementById('pendulumCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasContainer = document.getElementById('canvasContainer');
+
+    // Controls & Displays
+    const gravitySlider = document.getElementById('gravitySlider');
+    const gravityVal = document.getElementById('gravityVal');
+    const lengthSlider = document.getElementById('lengthSlider');
+    const lengthVal = document.getElementById('lengthVal');
+    const massSlider = document.getElementById('massSlider');
+    const massVal = document.getElementById('massVal');
+    const dampingToggle = document.getElementById('dampingToggle');
+
+    const angleDisplay = document.getElementById('angleDisplay');
+    const theoryPeriodDisplay = document.getElementById('theoryPeriod');
+    const livePeriodDisplay = document.getElementById('livePeriod');
+    const velocityDisplay = document.getElementById('velocityDisplay');
+    const oscCountBadge = document.getElementById('oscCountBadge');
+    const fpsCounter = document.getElementById('fpsCounter');
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const slowMoBtn = document.getElementById('slowMoBtn');
+    const speedLabel = document.getElementById('speedLabel');
+    const resetBtn = document.getElementById('resetBtn');
+    const logTrialBtn = document.getElementById('logTrialBtn');
+    const clearTrialsBtn = document.getElementById('clearTrialsBtn');
+    const trialsTableBody = document.getElementById('trialsTableBody');
+    const dragHint = document.getElementById('dragHint');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+
+    // Discovery prompts
+    const socraticPromptText = document.getElementById('socraticPromptText');
+    const exp1Btn = document.getElementById('exp1Btn');
+    const exp2Btn = document.getElementById('exp2Btn');
+    const exp3Btn = document.getElementById('exp3Btn');
+    const planetPresetBtns = document.querySelectorAll('.preset-btn');
+    const currentPlanetLabel = document.getElementById('currentPlanetLabel');
+
+    // Canvas scaling and origin
+    let originX = 0;
+    let originY = 50;
+    let meterPixels = 120; // 1 meter = 120px
+    let bobRadius = 20;
+
+    // Web Audio Synthesizer (Zero external audio URLs)
+    let audioCtx = null;
+    function playChime(freq = 520) {
+      if (!state.soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.22);
+      } catch (e) {
+        // Audio error handling
+      }
+    }
+
+    // --- Resize Canvas Resiliently ---
+    function resizeCanvas() {
+      const rect = canvasContainer.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      originX = rect.width / 2;
+      originY = 40;
+      // Adjust pixels-per-meter based on height
+      meterPixels = (rect.height - 110) / 3.0; // scale up to 3m
+      updateBobDimensions();
+    }
+
+    function updateBobDimensions() {
+      // Visual mass mapping: 0.1kg -> 14px, 5.0kg -> 36px
+      bobRadius = 14 + (state.mass - 0.1) * (22 / 4.9);
+    }
+
+    // Theoretical Period calculation: T = 2π * sqrt(L / g)
+    function calculateTheoryPeriod() {
+      if (state.gravity <= 0) return 0;
+      // Small angle approximation formula
+      const T0 = 2 * Math.PI * Math.sqrt(state.length / state.gravity);
+      // Correction for arbitrary release angle (first order): T ≈ T0 * (1 + (theta^2)/16)
+      const theta0 = Math.abs(state.theta);
+      const T = T0 * (1 + (theta0 * theta0) / 16);
+      return T;
+    }
+
+    function updateTheoreticalDisplay() {
+      const T = calculateTheoryPeriod();
+      theoryPeriodDisplay.textContent = T.toFixed(2) + ' s';
+    }
+
+    // --- Interactive Dragging with Mouse & Touch ---
+    function getPointerPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
+
+    function isOverBob(pos) {
+      const bobX = originX + state.length * meterPixels * Math.sin(state.theta);
+      const bobY = originY + state.length * meterPixels * Math.cos(state.theta);
+      const dx = pos.x - bobX;
+      const dy = pos.y - bobY;
+      return Math.sqrt(dx * dx + dy * dy) <= bobRadius + 18; // generous touch target
+    }
+
+    function onPointerDown(e) {
+      const pos = getPointerPos(e);
+      if (isOverBob(pos)) {
+        state.isDragging = true;
+        state.omega = 0;
+        state.alpha = 0;
+        dragHint.classList.add('hidden');
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      }
+    }
+
+    function onPointerMove(e) {
+      const pos = getPointerPos(e);
+      if (state.isDragging) {
+        const dx = pos.x - originX;
+        const dy = pos.y - originY;
+        // Calculate new angle from downward vertical
+        let newAngle = Math.atan2(dx, dy);
+        // Clamp to +/- 85 degrees for stable classroom demo
+        const maxAngle = 85 * (Math.PI / 180);
+        newAngle = Math.max(-maxAngle, Math.min(maxAngle, newAngle));
+        state.theta = newAngle;
+        state.omega = 0;
+        angleDisplay.textContent = (state.theta * 180 / Math.PI).toFixed(1) + '°';
+        updateTheoreticalDisplay();
+      } else {
+        canvas.style.cursor = isOverBob(pos) ? 'grab' : 'default';
+      }
+    }
+
+    function onPointerUp() {
+      if (state.isDragging) {
+        state.isDragging = false;
+        state.lastZeroCrossTime = performance.now() / 1000;
+        state.prevSign = Math.sign(state.theta);
+      }
+    }
+
+    canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+
+    // --- Slider Event Listeners ---
+    gravitySlider.addEventListener('input', (e) => {
+      state.gravity = parseFloat(e.target.value);
+      gravityVal.textContent = state.gravity.toFixed(2) + ' m/s²';
+      state.planetName = 'Custom';
+      currentPlanetLabel.textContent = `Custom (${state.gravity.toFixed(2)} m/s²)`;
+      planetPresetBtns.forEach(b => b.classList.remove('ring-2', 'ring-cyan-400'));
+      updateTheoreticalDisplay();
+    });
+
+    lengthSlider.addEventListener('input', (e) => {
+      state.length = parseFloat(e.target.value);
+      lengthVal.textContent = state.length.toFixed(2) + ' m';
+      updateTheoreticalDisplay();
+    });
+
+    massSlider.addEventListener('input', (e) => {
+      state.mass = parseFloat(e.target.value);
+      massVal.textContent = state.mass.toFixed(2) + ' kg';
+      updateBobDimensions();
+    });
+
+    dampingToggle.addEventListener('change', (e) => {
+      state.damping = e.target.checked ? 0.08 : 0.0;
+    });
+
+    // --- Preset Buttons (Planets) ---
+    planetPresetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        planetPresetBtns.forEach(b => b.classList.remove('ring-2', 'ring-cyan-400'));
+        btn.classList.add('ring-2', 'ring-cyan-400');
+        const g = parseFloat(btn.dataset.g);
+        const name = btn.dataset.name;
+        state.gravity = g;
+        state.planetName = name;
+        gravitySlider.value = g;
+        gravityVal.textContent = g.toFixed(2) + ' m/s²';
+        currentPlanetLabel.textContent = `${name} (${g.toFixed(2)} m/s²)`;
+        updateTheoreticalDisplay();
+      });
+    });
+
+    // --- Toolbar Actions ---
+    playPauseBtn.addEventListener('click', () => {
+      state.isRunning = !state.isRunning;
+      playPauseIcon.className = state.isRunning ? 'fa-solid fa-pause text-xs' : 'fa-solid fa-play text-xs';
+    });
+
+    slowMoBtn.addEventListener('click', () => {
+      state.timeScale = state.timeScale === 1.0 ? 0.5 : 1.0;
+      speedLabel.textContent = state.timeScale === 1.0 ? '1.0x' : '0.5x';
+      slowMoBtn.classList.toggle('text-cyan-400', state.timeScale === 0.5);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      state.theta = 25 * (Math.PI / 180);
+      state.omega = 0;
+      state.alpha = 0;
+      state.observedPeriods = [];
+      state.trialCount = 0;
+      oscCountBadge.textContent = '0';
+      livePeriodDisplay.textContent = 'Measuring...';
+      angleDisplay.textContent = '25.0°';
+      updateTheoreticalDisplay();
+    });
+
+    soundToggleBtn.addEventListener('click', () => {
+      state.soundEnabled = !state.soundEnabled;
+      soundIcon.className = state.soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-slate-500';
+    });
+
+    // --- Discovery Experiment Quick Prompts ---
+    exp1Btn.addEventListener('click', () => {
+      state.mass = 4.5;
+      massSlider.value = 4.5;
+      massVal.textContent = '4.50 kg';
+      updateBobDimensions();
+      socraticPromptText.innerHTML = "<b>Experiment 1 Activated:</b> Notice the heavy 4.5kg bob! Check the Period (T). Did the swing get any faster or slower? <i>(Hint: Mass doesn't affect period at all!)</i>";
+      exp1Btn.className = "py-1.5 px-2 rounded-lg bg-amber-500 text-slate-900 font-bold text-center";
+      exp2Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+      exp3Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+    });
+
+    exp2Btn.addEventListener('click', () => {
+      state.length = 0.6;
+      lengthSlider.value = 0.6;
+      lengthVal.textContent = '0.60 m';
+      updateTheoreticalDisplay();
+      socraticPromptText.innerHTML = "<b>Experiment 2 Activated:</b> Shortened the string to 0.6m! Notice how fast the period ticks down! Short string = Rapid swings.";
+      exp2Btn.className = "py-1.5 px-2 rounded-lg bg-amber-500 text-slate-900 font-bold text-center";
+      exp1Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+      exp3Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+    });
+
+    exp3Btn.addEventListener('click', () => {
+      const jupBtn = Array.from(planetPresetBtns).find(b => b.dataset.name === 'Jupiter');
+      if (jupBtn) jupBtn.click();
+      socraticPromptText.innerHTML = "<b>Experiment 3 Activated:</b> Teleported to Jupiter (24.8 m/s²)! Heavy gravity pulls the bob aggressively down, drastically shortening the period!";
+      exp3Btn.className = "py-1.5 px-2 rounded-lg bg-amber-500 text-slate-900 font-bold text-center";
+      exp1Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+      exp2Btn.className = "py-1.5 px-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-center";
+    });
+
+    // --- Log Trial Data ---
+    logTrialBtn.addEventListener('click', () => {
+      const count = ++state.trialCount;
+      const obsPeriod = state.currentEmpiricalPeriod ? state.currentEmpiricalPeriod.toFixed(2) + ' s' : 'Pending';
+      const thPeriod = calculateTheoryPeriod().toFixed(2) + ' s';
+
+      const trial = {
+        id: count,
+        planet: state.planetName,
+        length: state.length.toFixed(2) + ' m',
+        mass: state.mass.toFixed(1) + ' kg',
+        gravity: state.gravity.toFixed(1) + ' m/s²',
+        obsPeriod: obsPeriod,
+        thPeriod: thPeriod
+      };
+
+      state.trials.unshift(trial);
+      renderTrialsTable();
+      playChime(780);
+    });
+
+    clearTrialsBtn.addEventListener('click', () => {
+      state.trials = [];
+      state.trialCount = 0;
+      renderTrialsTable();
+    });
+
+    function renderTrialsTable() {
+      if (state.trials.length === 0) {
+        trialsTableBody.innerHTML = `
+          <tr class="text-slate-500 text-center italic py-4">
+            <td colspan="7" class="py-4 font-sans">No trials logged yet. Change sliders and click "Log Trial Data" above!</td>
+          </tr>
+        `;
+        return;
+      }
+      trialsTableBody.innerHTML = state.trials.map(t => `
+        <tr class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-2 px-3 text-cyan-400 font-bold">#${t.id}</td>
+          <td class="py-2 px-3 text-slate-200 font-sans font-semibold">${t.planet}</td>
+          <td class="py-2 px-3">${t.length}</td>
+          <td class="py-2 px-3">${t.mass}</td>
+          <td class="py-2 px-3">${t.gravity}</td>
+          <td class="py-2 px-3 text-emerald-400 font-bold">${t.obsPeriod}</td>
+          <td class="py-2 px-3 text-slate-400">${t.thPeriod}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- Main Physics & Render Loop (Verlet/Runge-Kutta Numerical Integration) ---
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let lastFpsUpdate = performance.now();
+    let trajectoryTrail = [];
+
+    // Period timing via zero-crossing detector
+    let lastCrossingTime = null;
+    let fullOscillationStart = null;
+    let oscillationLaps = 0;
+
+    function physicsStep(dt) {
+      if (state.isDragging || !state.isRunning) return;
+
+      // Realistic differential equation for pendulum:
+      // theta'' = -(g / L) * sin(theta) - damping * theta'
+      const g = state.gravity;
+      const L = state.length;
+      const b = state.damping;
+
+      // Sub-stepping for ultra-stable numerical integration (Runge-Kutta 2 / Verlet)
+      const subSteps = 4;
+      const subDt = (dt * state.timeScale) / subSteps;
+
+      for (let i = 0; i < subSteps; i++) {
+        const prevTheta = state.theta;
+        const currentAlpha = -(g / L) * Math.sin(state.theta) - b * state.omega;
+        
+        state.omega += currentAlpha * subDt;
+        state.theta += state.omega * subDt;
+
+        // Peak and Zero-crossing sensor to detect full oscillation period (T)
+        // Detect when passing through zero vertical equilibrium
+        if ((prevTheta < 0 && state.theta >= 0) || (prevTheta > 0 && state.theta <= 0)) {
+          const nowSec = performance.now() / 1000;
+          if (lastCrossingTime !== null) {
+            const halfPeriod = nowSec - lastCrossingTime;
+            // Full period is twice the half-period
+            const estimatedT = halfPeriod * 2 * (1 / state.timeScale);
+            if (estimatedT > 0.3 && estimatedT < 15.0) {
+              state.currentEmpiricalPeriod = estimatedT;
+              livePeriodDisplay.textContent = estimatedT.toFixed(2) + ' s';
+              oscillationLaps++;
+              oscCountBadge.textContent = Math.floor(oscillationLaps / 2);
+              playChime(440);
+            }
+          }
+          lastCrossingTime = nowSec;
+        }
+      }
+
+      // Live velocity at lowest point: v = omega * L
+      const linearVelocity = Math.abs(state.omega * state.length);
+      velocityDisplay.textContent = linearVelocity.toFixed(2) + ' m/s';
+      angleDisplay.textContent = (state.theta * 180 / Math.PI).toFixed(1) + '°';
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const bobPixelDist = state.length * meterPixels;
+      const bobX = originX + bobPixelDist * Math.sin(state.theta);
+      const bobY = originY + bobPixelDist * Math.cos(state.theta);
+
+      // Store trajectory trail
+      if (state.isRunning && !state.isDragging) {
+        trajectoryTrail.push({ x: bobX, y: bobY, alpha: 1.0 });
+        if (trajectoryTrail.length > 35) trajectoryTrail.shift();
+      }
+
+      // Draw faint trajectory path
+      if (trajectoryTrail.length > 1) {
+        for (let i = 0; i < trajectoryTrail.length - 1; i++) {
+          const p1 = trajectoryTrail[i];
+          const p2 = trajectoryTrail[i + 1];
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(76, 201, 240, ${(i / trajectoryTrail.length) * 0.4})`;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+      }
+
+      // Draw dashed reference arc for equilibrium angle
+      ctx.beginPath();
+      ctx.arc(originX, originY, bobPixelDist, Math.PI / 2 - 0.7, Math.PI / 2 + 0.7);
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw dashed vertical equilibrium line
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+      ctx.lineTo(originX, originY + bobPixelDist + 30);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+      ctx.stroke();
+
+      // Draw rigid suspension mount bar at top
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(originX - 60, originY - 14, 120, 14);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(originX - 58, originY - 12, 116, 4);
+
+      // Draw pivot pin
+      ctx.beginPath();
+      ctx.arc(originX, originY, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#4cc9f0';
+      ctx.shadowColor = '#4cc9f0';
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Draw string
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+      ctx.lineTo(bobX, bobY);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Draw velocity vector arrow at bob
+      if (!state.isDragging && Math.abs(state.omega) > 0.05) {
+        const velMag = state.omega * 15;
+        const perpX = Math.cos(state.theta);
+        const perpY = -Math.sin(state.theta);
+        ctx.beginPath();
+        ctx.moveTo(bobX, bobY);
+        ctx.lineTo(bobX + perpX * velMag, bobY + perpY * velMag);
+        ctx.strokeStyle = '#f72585';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+
+      // Draw the Bob (glowing spherical gradient)
+      const grad = ctx.createRadialGradient(
+        bobX - bobRadius * 0.3,
+        bobY - bobRadius * 0.3,
+        bobRadius * 0.1,
+        bobX,
+        bobY,
+        bobRadius
+      );
+      grad.addColorStop(0, '#a5f3fc');
+      grad.addColorStop(0.3, '#38bdf8');
+      grad.addColorStop(0.8, '#4338ca');
+      grad.addColorStop(1, '#1e1b4b');
+
+      ctx.beginPath();
+      ctx.arc(bobX, bobY, bobRadius, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.shadowColor = state.isDragging ? '#f43f5e' : '#38bdf8';
+      ctx.shadowBlur = state.isDragging ? 25 : 18;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Outer rim ring on bob
+      ctx.beginPath();
+      ctx.arc(bobX, bobY, bobRadius, 0, Math.PI * 2);
+      ctx.strokeStyle = state.isDragging ? '#fb7185' : 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Bob mass text label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 10px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${state.mass.toFixed(1)}kg`, bobX, bobY);
+    }
+
+    // --- Main Animation Loop ---
+    function animate(currentTime) {
+      requestAnimationFrame(animate);
+
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.05); // cap at 50ms for frame drops
+      lastTime = currentTime;
+
+      // FPS tracking
+      frameCount++;
+      if (currentTime - lastFpsUpdate >= 1000) {
+        fpsCounter.textContent = frameCount + ' FPS';
+        frameCount = 0;
+        lastFpsUpdate = currentTime;
+      }
+
+      physicsStep(dt);
+      draw();
+    }
+
+    // --- Window Load & Init ---
+    window.onload = function() {
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      updateTheoreticalDisplay();
+      requestAnimationFrame(animate);
+    };
+  </script>
+</body>
+</html>
