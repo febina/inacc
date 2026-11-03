@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IQLands • Rotational Symmetry &amp; Spatial Geometry Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #070d1e;
+      color: #e2e8f0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .mono-font { font-family: 'Space Grotesk', monospace; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #070d1e; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nav-tab.active {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(6, 182, 212, 0.45);
+      font-weight: 700;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; }
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #1e293b;
+      border-radius: 9999px;
+      height: 8px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #06b6d4;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+    @keyframes pulseMatch {
+      0% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+      50% { box-shadow: 0 0 35px rgba(16, 185, 129, 0.7); }
+      100% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .match-glow { animation: pulseMatch 0.8s ease-out; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+  <!-- TOP HEADER & BRANDING BAR -->
+  <header class="glass-card border-b border-slate-800 px-4 md:px-8 py-3 flex items-center justify-between z-30 sticky top-0">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-fuchsia-500 flex items-center justify-center text-white font-bold shadow-lg shadow-cyan-500/30">
+        <i class="fa-solid fa-arrows-spin text-xl animate-spin" style="animation-duration: 12s;"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="mono-font text-xl font-extrabold tracking-wider text-white">IQLANDS</span>
+          <span class="bg-cyan-500/20 text-cyan-300 text-[11px] font-bold px-2 py-0.5 rounded-full border border-cyan-500/40">SPATIAL SECTOR 5</span>
+        </div>
+        <p class="text-xs text-slate-400 font-medium hidden sm:block">Rotational Symmetry, Angles of Turn &amp; CHC Spatial Kinematics (Gv)</p>
+      </div>
+    </div>
+
+    <!-- Active Navigation Tabs -->
+    <nav class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+      <button id="tabBtnLab" onclick="switchTab('lab')" class="nav-tab active flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-slate-300 transition-all">
+        <i class="fa-solid fa-shapes"></i>
+        <span>1. Symmetry Lab</span>
+      </button>
+      <button id="tabBtnQuests" onclick="switchTab('quests')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-slate-300 transition-all">
+        <i class="fa-solid fa-gamepad"></i>
+        <span>2. Symmetry Quests</span>
+        <span class="bg-rose-500 text-white text-[9px] px-1.5 rounded-full font-bold ml-0.5">3 Puzzles</span>
+      </button>
+      <button id="tabBtnTelemetry" onclick="switchTab('telemetry')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-slate-300 transition-all">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>3. Parent CHC Telemetry</span>
+      </button>
+    </nav>
+
+    <!-- Learner Stats Bar -->
+    <div class="flex items-center gap-3 text-xs">
+      <div class="hidden md:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5">
+        <i class="fa-solid fa-bolt text-amber-400"></i>
+        <div class="text-[11px]">
+          <span class="text-slate-400">Stamina:</span>
+          <span class="mono-font text-amber-300 font-bold">26m left</span>
+        </div>
+      </div>
+
+      <div class="hidden sm:flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-amber-400">
+        <i class="fa-solid fa-fire"></i>
+        <span class="mono-font font-bold text-white text-[11px]">7 Days</span>
+      </div>
+
+      <div class="bg-gradient-to-r from-cyan-950 to-indigo-950 border border-cyan-500/40 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-gem text-cyan-400"></i>
+        <span class="mono-font font-bold text-cyan-300 text-sm" id="userTotalXP">1,550 XP</span>
+      </div>
+
+      <button id="soundToggleBtn" onclick="toggleAudio()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-lg transition-all" title="Toggle Sound">
+        <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= TAB 1: SYMMETRY LAB (EMPIRICAL SANDBOX) ================= -->
+  <main id="tabLab" class="tab-content active flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-3 md:p-6 max-w-[1700px] w-full mx-auto">
+    
+    <!-- Left Controls Panel (4 cols) -->
+    <section class="lg:col-span-4 flex flex-col gap-4 order-2 lg:order-1">
+      
+      <!-- Shape Selector Card -->
+      <div class="glass-card rounded-2xl p-4 md:p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-draw-polygon text-cyan-400"></i>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">Select Regular Polygon / Shape</h3>
+          </div>
+          <span class="mono-font text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-cyan-300" id="currentOrderBadge">Order 3 (120°)</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-3" id="shapeButtonsGrid">
+          <button onclick="setShape('triangle')" id="btn-triangle" class="shape-btn p-2.5 rounded-xl bg-slate-800/90 border border-cyan-500/80 text-center flex flex-col items-center ring-2 ring-cyan-400">
+            <span class="text-xl">▲</span>
+            <span class="text-xs font-bold text-white mt-1">Triangle</span>
+            <span class="text-[9px] text-cyan-300 mono-font">Order 3</span>
+          </button>
+          <button onclick="setShape('square')" id="btn-square" class="shape-btn p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center flex flex-col items-center">
+            <span class="text-xl">■</span>
+            <span class="text-xs font-bold text-slate-200 mt-1">Square</span>
+            <span class="text-[9px] text-slate-400 mono-font">Order 4</span>
+          </button>
+          <button onclick="setShape('pentagon')" id="btn-pentagon" class="shape-btn p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center flex flex-col items-center">
+            <span class="text-xl">⬠</span>
+            <span class="text-xs font-bold text-slate-200 mt-1">Pentagon</span>
+            <span class="text-[9px] text-slate-400 mono-font">Order 5</span>
+          </button>
+          <button onclick="setShape('hexagon')" id="btn-hexagon" class="shape-btn p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center flex flex-col items-center">
+            <span class="text-xl">⬡</span>
+            <span class="text-xs font-bold text-slate-200 mt-1">Hexagon</span>
+            <span class="text-[9px] text-slate-400 mono-font">Order 6</span>
+          </button>
+          <button onclick="setShape('star')" id="btn-star" class="shape-btn p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center flex flex-col items-center">
+            <span class="text-xl text-amber-400">★</span>
+            <span class="text-xs font-bold text-slate-200 mt-1">5-Star</span>
+            <span class="text-[9px] text-slate-400 mono-font">Order 5</span>
+          </button>
+          <button onclick="setShape('asymmetric')" id="btn-asymmetric" class="shape-btn p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-center flex flex-col items-center">
+            <span class="text-xl text-rose-400">◢</span>
+            <span class="text-xs font-bold text-slate-200 mt-1">Scalene</span>
+            <span class="text-[9px] text-rose-300 mono-font">Order 1 (None)</span>
+          </button>
+        </div>
+
+        <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-800 text-[11px] text-slate-300 flex items-center justify-between">
+          <span class="text-slate-400">Rotational Angle Formula:</span>
+          <span class="mono-font font-bold text-cyan-300">Angle = 360° / Order</span>
+        </div>
+      </div>
+
+      <!-- Rotation Controls Card -->
+      <div class="glass-card rounded-2xl p-4 md:p-5 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-compass-drafting text-indigo-400"></i>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">Angle of Turn Controller</h3>
+          </div>
+          <span class="mono-font text-base font-extrabold text-cyan-300" id="currentAngleText">0.0°</span>
+        </div>
+
+        <div>
+          <input type="range" id="rotationSlider" min="0" max="360" step="1" value="0" class="w-full">
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+            <span>0° (Origin)</span>
+            <span>90°</span>
+            <span>180° (Half)</span>
+            <span>270°</span>
+            <span>360° (Full)</span>
+          </div>
+        </div>
+
+        <!-- Quick Snap Preset Buttons -->
+        <div class="grid grid-cols-4 gap-1.5" id="snapPresets">
+          <button onclick="rotateTo(0)" class="py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] mono-font text-slate-300">0°</button>
+          <button onclick="stepByFormula(-1)" class="py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] mono-font text-slate-300">-1 Step</button>
+          <button onclick="stepByFormula(1)" class="py-1 px-2 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-[11px] mono-font text-cyan-300 border border-cyan-500/40">+1 Step</button>
+          <button onclick="rotateTo(360)" class="py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] mono-font text-slate-300">360°</button>
+        </div>
+
+        <!-- Toggles: Ghost Overlay & Symmetry Lines -->
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800">
+          <label class="flex items-center gap-2 cursor-pointer bg-slate-900/60 p-2 rounded-xl border border-slate-800">
+            <input type="checkbox" id="toggleGhost" checked class="accent-cyan-500 rounded">
+            <span class="text-xs text-slate-300">Ghost Outline</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer bg-slate-900/60 p-2 rounded-xl border border-slate-800">
+            <input type="checkbox" id="toggleAxes" checked class="accent-cyan-500 rounded">
+            <span class="text-xs text-slate-300">Symmetry Axes</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Socratic Guide (Professor Hoot) -->
+      <div class="glass-card rounded-2xl p-4 border-l-4 border-l-amber-400 bg-gradient-to-r from-amber-950/20 to-slate-900/60">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300">Professor Hoot's Challenge</h4>
+            <p class="text-[10px] text-slate-400">Empirical Spatial Rule</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-200 leading-relaxed mb-3" id="socraticPrompt">
+          "A regular shape possesses <b>Rotational Symmetry</b> if it maps directly onto itself more than once in a full 360° spin! Turn the dial: how many times does the glowing shape lock into the ghost outline?"
+        </p>
+        <div class="flex gap-2">
+          <button onclick="autoSpinTest()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl border border-slate-700 flex items-center justify-center gap-1.5 transition-all">
+            <i class="fa-solid fa-play text-cyan-400"></i>
+            <span>Auto-Scan 360°</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Interactive Geometry Canvas (8 cols) -->
+    <section class="lg:col-span-8 flex flex-col gap-4 order-1 lg:order-2">
+      <div id="canvasCard" class="glass-card rounded-2xl p-4 md:p-6 relative flex flex-col items-center justify-between min-h-[460px] overflow-hidden">
+        
+        <!-- Live Coincidence & Match Banner -->
+        <div class="w-full flex items-center justify-between z-10 mb-2">
+          <div class="flex items-center gap-2">
+            <div id="coincidencePill" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" id="matchPing" style="display: none;"></span>
+              <span class="text-slate-400">Self-Congruence:</span>
+              <span id="matchStateText" class="mono-font font-bold text-emerald-400">MATCH #1 (Origin 0°)</span>
+            </div>
+          </div>
+
+          <!-- Total matches found in current 360 cycle -->
+          <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
+            <span class="text-slate-400">Order of Symmetry:</span>
+            <span class="mono-font font-bold text-cyan-300" id="orderCountDisplay">3</span>
+          </div>
+        </div>
+
+        <!-- HTML5 Canvas Container -->
+        <div class="w-full relative flex items-center justify-center flex-1 my-2" style="height: 340px;" id="canvasHolder">
+          <canvas id="symmetryCanvas" class="w-full h-full rounded-2xl cursor-grab active:cursor-grabbing"></canvas>
+          <div id="canvasHint" class="absolute bottom-3 bg-slate-900/90 border border-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 pointer-events-none shadow-xl">
+            <i class="fa-solid fa-rotate text-cyan-400"></i>
+            <span>Drag directly on canvas or use the slider below to rotate!</span>
+          </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="w-full grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-3 border-t border-slate-800/80 text-center">
+          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Order of Symmetry (<span class="italic">n</span>)</p>
+            <p class="mono-font text-base md:text-lg font-bold text-cyan-400" id="metricOrder">3</p>
+            <p class="text-[9px] text-slate-500 font-mono">Matches in 360° turn</p>
+          </div>
+
+          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Minimal Angle of Turn</p>
+            <p class="mono-font text-base md:text-lg font-bold text-emerald-400" id="metricMinAngle">120.0°</p>
+            <p class="text-[9px] text-slate-500 font-mono">360° / Order</p>
+          </div>
+
+          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 mb-0.5">Congruence Status</p>
+            <p class="mono-font text-base md:text-lg font-bold text-fuchsia-400" id="metricAlignment">100% Locked</p>
+            <p class="text-[9px] text-slate-500 font-mono">Angular error &lt; 2°</p>
+          </div>
+
+          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 flex flex-col justify-center">
+            <button onclick="logSymmetryObservation()" class="w-full py-2 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs rounded-lg transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span>Log Discovery (+30 XP)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Evidence Journal Log -->
+      <div class="glass-card rounded-2xl p-4 flex-1 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark text-cyan-400"></i>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200">Geometry Discovery Journal</h4>
+            <span class="text-[11px] text-slate-400">(Empirical Proof Records)</span>
+          </div>
+          <span id="journalCount" class="text-xs text-cyan-300 font-mono">1 Discovery Logged</span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-2 px-3">Shape Tested</th>
+                <th class="py-2 px-3">Order (n)</th>
+                <th class="py-2 px-3">Angle of Turn</th>
+                <th class="py-2 px-3">Match Angles in 360°</th>
+                <th class="py-2 px-3">Symmetry Classification</th>
+              </tr>
+            </thead>
+            <tbody id="journalTableBody" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+              <tr class="hover:bg-slate-800/30">
+                <td class="py-2 px-3 text-cyan-300 font-sans font-bold">Equilateral Triangle</td>
+                <td class="py-2 px-3 text-white">Order 3</td>
+                <td class="py-2 px-3 text-emerald-400">120°</td>
+                <td class="py-2 px-3 text-slate-400">0°, 120°, 240°, 360°</td>
+                <td class="py-2 px-3 text-emerald-400 font-sans font-semibold">Rotational &amp; Reflectional</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ================= TAB 2: SYMMETRY QUESTS (GAMIFIED CHALLENGES) ================= -->
+  <main id="tabQuests" class="tab-content flex-1 flex-col gap-6 p-4 md:p-8 max-w-[1500px] w-full mx-auto">
+    
+    <!-- Quests Header Banner -->
+    <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-500 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-cyan-600/30 text-cyan-400 flex items-center justify-center text-2xl">
+          <i class="fa-solid fa-dice-d20"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Spatial Mastery Quests: Rotational Symmetry</h2>
+          <p class="text-xs text-slate-400">Grade 5-6 Competencies: Minimal Angles, Regular Polygons &amp; Mental Spatial Rotation (Gv)</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-semibold text-slate-300">Quests Solved: <span id="questsSolvedCount" class="text-cyan-400 font-mono font-bold">0 / 3</span></span>
+        <button onclick="switchTab('telemetry')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-2">
+          <span>View CHC Telemetry</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 Gamified Challenges Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- QUEST 1: Ancient Mandala Vault -->
+      <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border border-slate-800 hover:border-cyan-500/50 transition-all">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <span class="bg-cyan-500/20 text-cyan-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-cyan-500/30">QUEST 1</span>
+            <span class="text-xs font-mono text-cyan-400 font-bold">+180 XP</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">The Ancient Mandala Vault</h3>
+          <p class="text-xs text-slate-400 mb-3">
+            The vault lock has <b>8 identical spokes (Order 8)</b>. What is the minimal angle you must rotate the dial to disarm the first lock pin?
+          </p>
+
+          <!-- Interactive Dial Visual -->
+          <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800 text-center mb-3">
+            <div class="w-16 h-16 rounded-full border-2 border-dashed border-cyan-400 mx-auto flex items-center justify-center relative mb-1">
+              <i class="fa-solid fa-dharmachakra text-cyan-300 text-3xl"></i>
+            </div>
+            <p class="text-xs text-slate-400">Mandala with 8 symmetric spokes</p>
+            <p class="text-[10px] text-cyan-400 font-mono">Formula: Angle = 360° / 8</p>
+          </div>
+
+          <div class="space-y-2 mb-3" id="quest1Options">
+            <button onclick="answerQuest1(this, false)" class="q1-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              A) 60°
+            </button>
+            <button onclick="answerQuest1(this, true)" class="q1-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              B) 45°
+            </button>
+            <button onclick="answerQuest1(this, false)" class="q1-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              C) 90°
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div id="quest1Msg" class="text-xs font-semibold text-center mb-2 min-h-[18px]"></div>
+          <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-key text-cyan-400"></i>
+            <span>Deduces minimal rotational step from order</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUEST 2: Snowflake Crystal Repair -->
+      <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border border-slate-800 hover:border-indigo-500/50 transition-all">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <span class="bg-indigo-500/20 text-indigo-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-500/30">QUEST 2</span>
+            <span class="text-xs font-mono text-cyan-400 font-bold">+220 XP</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">Snowflake Crystal Repair</h3>
+          <p class="text-xs text-slate-400 mb-3">
+            Natural ice crystals freeze with <b>hexagonal molecular symmetry</b>. How many times will this complete snowflake coincide with itself in a 360° spin?
+          </p>
+
+          <!-- Snowflake Visual -->
+          <div class="bg-slate-900/90 rounded-xl p-4 border border-slate-800 text-center mb-3">
+            <div class="w-16 h-16 rounded-full border border-indigo-500/50 mx-auto flex items-center justify-center relative mb-1">
+              <i class="fa-regular fa-snowflake text-indigo-300 text-3xl animate-pulse"></i>
+            </div>
+            <p class="text-xs text-slate-300">Ice Crystal (6-fold arms)</p>
+            <p class="text-[10px] text-indigo-400 font-mono">Rotational Order ?</p>
+          </div>
+
+          <div class="space-y-2 mb-3" id="quest2Options">
+            <button onclick="answerQuest2(this, false)" class="q2-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              A) Order 4 (every 90°)
+            </button>
+            <button onclick="answerQuest2(this, true)" class="q2-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              B) Order 6 (every 60°)
+            </button>
+            <button onclick="answerQuest2(this, false)" class="q2-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              C) Order 12 (every 30°)
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div id="quest2Msg" class="text-xs font-semibold text-center mb-2 min-h-[18px]"></div>
+          <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-snowflake text-indigo-400"></i>
+            <span>Spatial part-whole crystallographic pattern</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUEST 3: Real-World Logo Detective -->
+      <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border border-slate-800 hover:border-emerald-500/50 transition-all">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <span class="bg-emerald-500/20 text-emerald-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/30">QUEST 3</span>
+            <span class="text-xs font-mono text-cyan-400 font-bold">+150 XP</span>
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">Logo &amp; Symbol Detective</h3>
+          <p class="text-xs text-slate-400 mb-3">
+            Which of these iconic real-world symbols has <b>Order 3 Rotational Symmetry</b>, but <b>NO reflectional line symmetry</b>?
+          </p>
+
+          <!-- Symbol Grid -->
+          <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800 grid grid-cols-3 gap-2 text-center mb-3">
+            <div class="p-2 bg-slate-800/60 rounded-lg">
+              <i class="fa-solid fa-recycle text-emerald-400 text-xl"></i>
+              <p class="text-[10px] text-slate-300 mt-1">Recycle</p>
+            </div>
+            <div class="p-2 bg-slate-800/60 rounded-lg">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xl"></i>
+              <p class="text-[10px] text-slate-300 mt-1">Warning</p>
+            </div>
+            <div class="p-2 bg-slate-800/60 rounded-lg">
+              <i class="fa-solid fa-ban text-rose-400 text-xl"></i>
+              <p class="text-[10px] text-slate-300 mt-1">Prohibited</p>
+            </div>
+          </div>
+
+          <div class="space-y-2 mb-3" id="quest3Options">
+            <button onclick="answerQuest3(this, true)" class="q3-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              A) The Recycling Arrows (Mobius Loop)
+            </button>
+            <button onclick="answerQuest3(this, false)" class="q3-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              B) The Traffic Warning Triangle
+            </button>
+            <button onclick="answerQuest3(this, false)" class="q3-opt w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all">
+              C) The Circular Prohibited Sign
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div id="quest3Msg" class="text-xs font-semibold text-center mb-2 min-h-[18px]"></div>
+          <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-brain text-emerald-400"></i>
+            <span>Differentiates rotation vs. reflection</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= TAB 3: PARENT DASHBOARD & CHC RADAR ================= -->
+  <main id="tabTelemetry" class="tab-content flex-1 flex-col gap-6 p-4 md:p-8 max-w-[1500px] w-full mx-auto">
+    
+    <!-- Top Guardian Header -->
+    <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="bg-indigo-500/20 text-indigo-300 text-xs font-bold px-2 py-0.5 rounded border border-indigo-500/30">FOR GROWN-UPS &amp; TEACHERS</span>
+          <span class="text-xs text-slate-400">CHC Psychometric Telemetry Layer</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white">Learner Cognitive Telemetry: Rotational Symmetry</h2>
+        <p class="text-xs text-slate-400">Learner: <b class="text-slate-200">Sparky (Age 10.1, Grade 5 CBSE/ICSE)</b> • Module: Spatial Geometry &amp; Rotational Transformations</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="exportClinicalReport()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-2 transition-all">
+          <i class="fa-solid fa-file-pdf text-cyan-400"></i>
+          <span>Export CHC Summary PDF</span>
+        </button>
+        <button onclick="switchTab('lab')" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-2">
+          <span>Return to Symmetry Lab</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Overview Diagnostic Stats (4 cards) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-card rounded-xl p-4 border border-slate-800">
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Geometry Exploration</p>
+        <p class="mono-font text-2xl font-extrabold text-white mt-1">22m 14s</p>
+        <p class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-shield-check mr-1"></i>Within 30m screen cap</p>
+      </div>
+
+      <div class="glass-card rounded-xl p-4 border border-slate-800">
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">First-Look Accuracy</p>
+        <p class="mono-font text-2xl font-extrabold text-cyan-400 mt-1" id="parentAccuracy">92.6%</p>
+        <p class="text-[10px] text-slate-400 mt-1">Initial response reliability</p>
+      </div>
+
+      <div class="glass-card rounded-xl p-4 border border-slate-800">
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Mental Rotation Latency</p>
+        <p class="mono-font text-2xl font-extrabold text-emerald-400 mt-1">14.1s</p>
+        <p class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-brain mr-1"></i>Careful spatial visualization</p>
+      </div>
+
+      <div class="glass-card rounded-xl p-4 border border-slate-800">
+        <p class="text-[11px] text-slate-400 font-semibold uppercase">Symmetry XP Earned</p>
+        <p class="mono-font text-2xl font-extrabold text-fuchsia-400 mt-1" id="parentXPDisplay">+480 XP</p>
+        <p class="text-[10px] text-slate-400 mt-1">Order 6 Geometry Master</p>
+      </div>
+    </div>
+
+    <!-- Curriculum Alignment vs CHC Radar -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- School Curriculum Mapping (6 cols) -->
+      <div class="lg:col-span-6 glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">Curriculum Competencies Mastered</h3>
+            </div>
+            <span class="text-xs bg-slate-800 text-cyan-300 font-mono px-2 py-0.5 rounded">CBSE / IB Grade 5-6</span>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">Order of Rotational Symmetry &amp; Angles of Turn</span>
+                <span class="text-emerald-400 font-mono font-bold">96% Mastered</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-emerald-400 h-2 rounded-full" style="width: 96%"></div>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">Calculates $\text{Angle} = 360^\circ / n$ and tests coincidence on regular polygons.</p>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">Distinguishing Rotation vs. Reflectional Symmetry</span>
+                <span class="text-cyan-400 font-mono font-bold">90% Mastered</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-cyan-400 h-2 rounded-full" style="width: 90%"></div>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">Identified directional chirality in recycling logos &amp; pinwheel transforms.</p>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">Spatial Part-Whole Decomposition (Geometry)</span>
+                <span class="text-indigo-400 font-mono font-bold">85% Proficient</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-indigo-400 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">Reconstructed multi-fold snowflake crystal arms.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges Earned Section -->
+        <div class="mt-6 pt-4 border-t border-slate-800">
+          <p class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Micro-Certifications Achieved:</p>
+          <div class="flex flex-wrap gap-2" id="symmetryBadges">
+            <span class="bg-cyan-950/80 border border-cyan-600/60 text-cyan-300 text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+              <i class="fa-solid fa-shapes text-cyan-400"></i> Polygon Master (Order 6)
+            </span>
+            <span class="bg-indigo-950/80 border border-indigo-600/60 text-indigo-300 text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+              <i class="fa-solid fa-snowflake text-indigo-400"></i> Hexagonal Specialist
+            </span>
+            <span class="bg-emerald-950/80 border border-emerald-600/60 text-emerald-300 text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+              <i class="fa-solid fa-dharmachakra text-emerald-400"></i> 360° Angle Pioneer
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHC Cognitive Radar (6 cols) -->
+      <div class="lg:col-span-6 glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-brain text-fuchsia-400"></i>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">CHC 6-Factor Cognitive Telemetry</h3>
+            </div>
+            <span class="text-xs text-slate-400">Grade 5 Psychometric Norm</span>
+          </div>
+
+          <div class="space-y-3 font-mono text-xs">
+            <div>
+              <div class="flex justify-between mb-1 font-sans">
+                <span class="text-slate-300">Spatial Visualization &amp; Mental Rotation (Gv)</span>
+                <span class="text-cyan-400 font-bold">94th %ile</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 rounded-full" style="width: 94%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1 font-sans">
+                <span class="text-slate-300">Quantitative Logic (Gq)</span>
+                <span class="text-emerald-400 font-bold">91st %ile</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full" style="width: 91%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1 font-sans">
+                <span class="text-slate-300">Fluid Inductive Reasoning (Gf)</span>
+                <span class="text-fuchsia-400 font-bold">88th %ile</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-gradient-to-r from-indigo-500 to-fuchsia-400 h-2 rounded-full" style="width: 88%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1 font-sans">
+                <span class="text-slate-300">Working Memory Attention Buffer (Gsm)</span>
+                <span class="text-amber-400 font-bold">78th %ile</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2">
+                <div class="bg-gradient-to-r from-yellow-500 to-amber-400 h-2 rounded-full" style="width: 78%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Root Cause Clinical Observation -->
+        <div class="mt-4 p-3.5 bg-slate-900/90 rounded-xl border border-slate-800">
+          <p class="text-xs font-bold text-cyan-300 mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-microscope"></i>
+            <span>Pedagogical Root Cause Diagnosis:</span>
+          </p>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Sparky exhibits superior <b>Spatial Part-Whole Cognition (94th percentile)</b>, immediately detecting rotational alignment before mathematical division is completed. This mental rotation velocity significantly accelerates coordinate geometry and fraction slicing mastery.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Phygital Printable Kit -->
+    <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-900">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl">
+          <i class="fa-solid fa-compass-drafting"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-white">Recommended Weekend "Phygital" Scaffolding Kit</h4>
+          <p class="text-xs text-slate-400">2-Page Printable Activity: Origami Paper Pinwheels &amp; Rangoli rotational symmetry folding patterns for screen-free tactical play.</p>
+        </div>
+      </div>
+      <button onclick="downloadWorksheet()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-cyan-500/20 whitespace-nowrap">
+        <i class="fa-solid fa-print mr-1.5"></i>Generate Custom PDF
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Interactive Feedback Toast -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 bg-slate-900 border border-cyan-400/80 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-32 transition-transform duration-300 z-50">
+    <div class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm" id="toastIcon">
+      <i class="fa-solid fa-shapes"></i>
+    </div>
+    <div>
+      <p class="text-xs font-bold text-cyan-300" id="toastTitle">Symmetry Discovery!</p>
+      <p class="text-[11px] text-slate-300" id="toastMsg">+30 XP added to cognitive profile</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT: SYMMETRY ENGINE, CANVAS RENDERING & AUDIO -->
+  <script>
+    // --- Global Application State ---
+    let totalXP = 1550;
+    let questsSolved = { q1: false, q2: false, q3: false };
+    let currentShape = 'triangle';
+    let currentAngle = 0; // in degrees
+    let isDragging = false;
+    let audioEnabled = true;
+    let audioCtx = null;
+    let lastLockedIndex = -1;
+
+    // Shape Definitions
+    const shapeData = {
+      triangle: {
+        name: 'Equilateral Triangle',
+        order: 3,
+        minAngle: 120,
+        type: 'regular',
+        points: (r) => {
+          const pts = [];
+          for (let i = 0; i < 3; i++) {
+            const a = -Math.PI / 2 + (i * 2 * Math.PI) / 3;
+            pts.push({ x: r * Math.cos(a), y: r * Math.sin(a) });
+          }
+          return pts;
+        }
+      },
+      square: {
+        name: 'Square',
+        order: 4,
+        minAngle: 90,
+        type: 'regular',
+        points: (r) => {
+          const pts = [];
+          for (let i = 0; i < 4; i++) {
+            const a = -Math.PI / 4 + (i * 2 * Math.PI) / 4;
+            pts.push({ x: r * Math.cos(a), y: r * Math.sin(a) });
+          }
+          return pts;
+        }
+      },
+      pentagon: {
+        name: 'Regular Pentagon',
+        order: 5,
+        minAngle: 72,
+        type: 'regular',
+        points: (r) => {
+          const pts = [];
+          for (let i = 0; i < 5; i++) {
+            const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+            pts.push({ x: r * Math.cos(a), y: r * Math.sin(a) });
+          }
+          return pts;
+        }
+      },
+      hexagon: {
+        name: 'Regular Hexagon',
+        order: 6,
+        minAngle: 60,
+        type: 'regular',
+        points: (r) => {
+          const pts = [];
+          for (let i = 0; i < 6; i++) {
+            const a = (i * 2 * Math.PI) / 6;
+            pts.push({ x: r * Math.cos(a), y: r * Math.sin(a) });
+          }
+          return pts;
+        }
+      },
+      star: {
+        name: '5-Pointed Star',
+        order: 5,
+        minAngle: 72,
+        type: 'star',
+        points: (r) => {
+          const pts = [];
+          const innerR = r * 0.42;
+          for (let i = 0; i < 10; i++) {
+            const rad = i % 2 === 0 ? r : innerR;
+            const a = -Math.PI / 2 + (i * Math.PI) / 5;
+            pts.push({ x: rad * Math.cos(a), y: rad * Math.sin(a) });
+          }
+          return pts;
+        }
+      },
+      asymmetric: {
+        name: 'Scalene Quadrilateral',
+        order: 1,
+        minAngle: 360,
+        type: 'asymmetric',
+        points: (r) => [
+          { x: -r * 0.8, y: -r * 0.7 },
+          { x: r * 0.9, y: -r * 0.3 },
+          { x: r * 0.5, y: r * 0.8 },
+          { x: -r * 0.6, y: r * 0.4 }
+        ]
+      }
+    };
+
+    const canvas = document.getElementById('symmetryCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasHolder = document.getElementById('canvasHolder');
+    const rotationSlider = document.getElementById('rotationSlider');
+    const currentAngleText = document.getElementById('currentAngleText');
+    const toggleGhost = document.getElementById('toggleGhost');
+    const toggleAxes = document.getElementById('toggleAxes');
+    const matchStateText = document.getElementById('matchStateText');
+    const matchPing = document.getElementById('matchPing');
+
+    // --- Sound Synthesis via Web Audio API ---
+    function playTone(freq, type = 'sine', duration = 0.25) {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration + 0.02);
+      } catch (e) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('soundIcon').className = audioEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-slate-500';
+    }
+
+    // --- Tab Switcher & Toast ---
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+      if (tabId === 'lab') {
+        document.getElementById('tabBtnLab').classList.add('active');
+        document.getElementById('tabLab').classList.add('active');
+        resizeCanvas();
+      } else if (tabId === 'quests') {
+        document.getElementById('tabBtnQuests').classList.add('active');
+        document.getElementById('tabQuests').classList.add('active');
+      } else if (tabId === 'telemetry') {
+        document.getElementById('tabBtnTelemetry').classList.add('active');
+        document.getElementById('tabTelemetry').classList.add('active');
+      }
+    }
+
+    function triggerToast(title, msg, xp = 0) {
+      if (xp > 0) {
+        totalXP += xp;
+        document.getElementById('userTotalXP').textContent = `${totalXP.toLocaleString()} XP`;
+        document.getElementById('parentXPDisplay').textContent = `+${totalXP - 1550 + 480} XP`;
+      }
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('translate-y-32');
+      setTimeout(() => toast.classList.add('translate-y-32'), 3500);
+    }
+
+    // --- Canvas Resize & Rendering ---
+    let centerX = 0;
+    let centerY = 0;
+    let shapeRadius = 110;
+
+    function resizeCanvas() {
+      if (!canvasHolder) return;
+      const rect = canvasHolder.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      centerX = rect.width / 2;
+      centerY = rect.height / 2;
+      shapeRadius = Math.min(rect.width, rect.height) * 0.38;
+      render();
+    }
+
+    function setShape(key) {
+      currentShape = key;
+      const data = shapeData[key];
+
+      // Update UI button highlights
+      document.querySelectorAll('.shape-btn').forEach(btn => {
+        btn.classList.remove('ring-2', 'ring-cyan-400', 'border-cyan-500/80');
+        btn.classList.add('border-slate-700');
+      });
+      const activeBtn = document.getElementById(`btn-${key}`);
+      if (activeBtn) {
+        activeBtn.classList.add('ring-2', 'ring-cyan-400', 'border-cyan-500/80');
+      }
+
+      // Update Header & Metrics
+      document.getElementById('currentOrderBadge').textContent = `Order ${data.order} (${data.minAngle}°)`;
+      document.getElementById('orderCountDisplay').textContent = data.order;
+      document.getElementById('metricOrder').textContent = data.order;
+      document.getElementById('metricMinAngle').textContent = `${data.minAngle.toFixed(1)}°`;
+
+      currentAngle = 0;
+      rotationSlider.value = 0;
+      currentAngleText.textContent = '0.0°';
+      lastLockedIndex = -1;
+
+      // Update Socratic challenge
+      if (key === 'asymmetric') {
+        document.getElementById('socraticPrompt').innerHTML = 
+          "<b>Notice:</b> This scalene shape has <b>no rotational symmetry</b>. It only matches itself once at 360° (Order 1 = No true rotational symmetry)!";
+      } else {
+        document.getElementById('socraticPrompt').innerHTML = 
+          `Turn the dial! For a <b>${data.name}</b>, it will match itself exactly every <b>${data.minAngle}°</b>, totaling <b>${data.order} times</b> in 360°!`;
+      }
+
+      playTone(520, 'sine', 0.2);
+      render();
+    }
+
+    function rotateTo(ang) {
+      currentAngle = ang;
+      rotationSlider.value = ang;
+      currentAngleText.textContent = `${ang.toFixed(1)}°`;
+      render();
+    }
+
+    function stepByFormula(direction) {
+      const step = shapeData[currentShape].minAngle;
+      let newAng = Math.round(currentAngle + direction * step);
+      if (newAng < 0) newAng = 360 + newAng;
+      if (newAng > 360) newAng = newAng % 360;
+      rotateTo(newAng);
+    }
+
+    function autoSpinTest() {
+      let ang = 0;
+      const interval = setInterval(() => {
+        ang += 2;
+        rotateTo(ang);
+        if (ang >= 360) {
+          clearInterval(interval);
+        }
+      }, 20);
+    }
+
+    // --- Coincidence Logic: Does Current Angle Match Any Symmetry Step? ---
+    function checkCoincidence() {
+      const data = shapeData[currentShape];
+      const step = data.minAngle;
+      const tolerance = 2.5; // degrees
+
+      let isMatch = false;
+      let matchIdx = -1;
+
+      if (data.order === 1) {
+        // Only 0 and 360 are matches
+        if (Math.abs(currentAngle) < tolerance || Math.abs(currentAngle - 360) < tolerance) {
+          isMatch = true;
+          matchIdx = 1;
+        }
+      } else {
+        for (let i = 0; i <= data.order; i++) {
+          const targetAng = i * step;
+          if (Math.abs(currentAngle - targetAng) <= tolerance) {
+            isMatch = true;
+            matchIdx = i === data.order ? data.order : i + 1;
+            break;
+          }
+        }
+      }
+
+      const pill = document.getElementById('coincidencePill');
+      const card = document.getElementById('canvasCard');
+      const alignMetric = document.getElementById('metricAlignment');
+
+      if (isMatch) {
+        matchStateText.textContent = `LOCKED CONGRUENCE #${matchIdx} (${currentAngle.toFixed(0)}°)`;
+        matchStateText.className = "mono-font font-bold text-emerald-400";
+        pill.classList.add('border-emerald-500/80', 'bg-emerald-950/40');
+        alignMetric.textContent = "100% Locked";
+        alignMetric.className = "mono-font text-base md:text-lg font-bold text-emerald-400";
+        matchPing.style.display = 'inline-block';
+
+        if (matchIdx !== lastLockedIndex) {
+          lastLockedIndex = matchIdx;
+          playTone(880, 'triangle', 0.25);
+          card.classList.add('match-glow');
+          setTimeout(() => card.classList.remove('match-glow'), 800);
+        }
+      } else {
+        matchStateText.textContent = "Rotating (Out of Phase)";
+        matchStateText.className = "mono-font font-semibold text-slate-400";
+        pill.classList.remove('border-emerald-500/80', 'bg-emerald-950/40');
+        alignMetric.textContent = "Unaligned";
+        alignMetric.className = "mono-font text-base md:text-lg font-bold text-slate-400";
+        matchPing.style.display = 'none';
+        lastLockedIndex = -1;
+      }
+    }
+
+    // --- Render Geometry Canvas ---
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const data = shapeData[currentShape];
+      const pts = data.points(shapeRadius);
+
+      // 1. Draw Dial Degree Ticks & Circumference
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, shapeRadius + 28, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Draw match markers along the circumference
+      if (data.order > 1) {
+        for (let i = 0; i < data.order; i++) {
+          const tickRad = (-Math.PI / 2) + (i * data.minAngle * Math.PI) / 180;
+          const tx = centerX + (shapeRadius + 28) * Math.cos(tickRad);
+          const ty = centerY + (shapeRadius + 28) * Math.sin(tickRad);
+          ctx.beginPath();
+          ctx.arc(tx, ty, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#10b981';
+          ctx.fill();
+        }
+      }
+
+      // 2. Draw Symmetry Axes (Lines passing through origin)
+      if (toggleAxes.checked && data.order > 1) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        for (let i = 0; i < data.order; i++) {
+          const a = (-Math.PI / 2) + (i * data.minAngle * Math.PI) / 180;
+          ctx.beginPath();
+          ctx.moveTo(centerX - (shapeRadius + 20) * Math.cos(a), centerY - (shapeRadius + 20) * Math.sin(a));
+          ctx.lineTo(centerX + (shapeRadius + 20) * Math.cos(a), centerY + (shapeRadius + 20) * Math.sin(a));
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // 3. Draw Ghost Outline (Original 0° Position)
+      if (toggleGhost.checked) {
+        ctx.save();
+        ctx.beginPath();
+        pts.forEach((p, idx) => {
+          const gx = centerX + p.x;
+          const gy = centerY + p.y;
+          if (idx === 0) ctx.moveTo(gx, gy);
+          else ctx.lineTo(gx, gy);
+        });
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 6]);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 4. Draw Rotating Polygon
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate((currentAngle * Math.PI) / 180);
+
+      ctx.beginPath();
+      pts.forEach((p, idx) => {
+        if (idx === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.closePath();
+
+      // Dynamic Fill Gradient
+      const polyGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, shapeRadius);
+      polyGrad.addColorStop(0, 'rgba(6, 182, 212, 0.4)');
+      polyGrad.addColorStop(0.7, 'rgba(99, 102, 241, 0.35)');
+      polyGrad.addColorStop(1, 'rgba(15, 23, 42, 0.8)');
+      ctx.fillStyle = polyGrad;
+      ctx.fill();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Vertex highlight beads
+      pts.forEach((p, idx) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, idx === 0 ? 7 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = idx === 0 ? '#f43f5e' : '#38bdf8'; // Apex marker in red
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+
+      // Apex indicator text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 10px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('A', pts[0].x, pts[0].y - 12);
+
+      ctx.restore();
+
+      // 5. Draw Center Rotation Pivot Point
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      checkCoincidence();
+    }
+
+    // --- Slider & Drag Interaction ---
+    rotationSlider.addEventListener('input', (e) => {
+      currentAngle = parseFloat(e.target.value);
+      currentAngleText.textContent = `${currentAngle.toFixed(1)}°`;
+      render();
+    });
+
+    toggleGhost.addEventListener('change', render);
+    toggleAxes.addEventListener('change', render);
+
+    function getAngleFromPointer(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - (rect.left + centerX);
+      const dy = clientY - (rect.top + centerY);
+      let deg = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+      if (deg < 0) deg += 360;
+      return deg;
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      const deg = getAngleFromPointer(e);
+      rotateTo(deg);
+      document.getElementById('canvasHint').style.display = 'none';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const deg = getAngleFromPointer(e);
+        rotateTo(deg);
+      }
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    canvas.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      const deg = getAngleFromPointer(e);
+      rotateTo(deg);
+      document.getElementById('canvasHint').style.display = 'none';
+    }, { passive: false });
+    window.addEventListener('touchmove', (e) => {
+      if (isDragging) {
+        const deg = getAngleFromPointer(e);
+        rotateTo(deg);
+      }
+    }, { passive: false });
+    window.addEventListener('touchend', () => { isDragging = false; });
+
+    // --- Log Observation to Journal ---
+    let logCounter = 1;
+    function logSymmetryObservation() {
+      const data = shapeData[currentShape];
+      const tbody = document.getElementById('journalTableBody');
+      const row = document.createElement('tr');
+      row.className = "hover:bg-slate-800/30";
+
+      let matchAnglesStr = "";
+      if (data.order === 1) {
+        matchAnglesStr = "0°, 360°";
+      } else {
+        const arr = [];
+        for (let i = 0; i <= data.order; i++) arr.push(`${i * data.minAngle}°`);
+        matchAnglesStr = arr.join(', ');
+      }
+
+      row.innerHTML = `
+        <td class="py-2 px-3 text-cyan-300 font-sans font-bold">${data.name}</td>
+        <td class="py-2 px-3 text-white">Order ${data.order}</td>
+        <td class="py-2 px-3 text-emerald-400">${data.minAngle}°</td>
+        <td class="py-2 px-3 text-slate-400">${matchAnglesStr}</td>
+        <td class="py-2 px-3 ${data.order > 1 ? 'text-emerald-400' : 'text-rose-400'} font-sans font-semibold">
+          ${data.order > 1 ? 'Rotational Symmetry' : 'No Rotational Symmetry'}
+        </td>
+      `;
+      tbody.prepend(row);
+      logCounter++;
+      document.getElementById('journalCount').textContent = `${logCounter} Discoveries Logged`;
+      playTone(720, 'triangle', 0.3);
+      triggerToast("Discovery Recorded in Journal!", `Logged ${data.name} symmetry properties.`, 30);
+    }
+
+    // --- Quests Mini-Games Logic ---
+    function answerQuest1(btn, isCorrect) {
+      const msg = document.getElementById('quest1Msg');
+      document.querySelectorAll('#quest1Options button').forEach(b => {
+        b.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-950/40', 'bg-rose-950/40');
+      });
+      if (isCorrect) {
+        btn.classList.add('border-emerald-500', 'bg-emerald-950/40');
+        msg.className = "text-xs font-bold text-emerald-400 text-center";
+        msg.textContent = "✓ Vault Pin Disarmed! 360° / 8 = exactly 45° turn!";
+        playTone(880, 'triangle', 0.4);
+        if (!questsSolved.q1) {
+          questsSolved.q1 = true;
+          updateQuestCount();
+          triggerToast("Quest 1 Solved: Mandala Vault!", "Awarded +180 XP & Lockbreaker Badge", 180);
+        }
+      } else {
+        btn.classList.add('border-rose-500', 'bg-rose-950/40');
+        msg.className = "text-xs font-semibold text-rose-400 text-center";
+        msg.textContent = "Incorrect. Recall the formula: 360° divided by 8 spokes.";
+        playTone(220, 'sawtooth', 0.3);
+      }
+    }
+
+    function answerQuest2(btn, isCorrect) {
+      const msg = document.getElementById('quest2Msg');
+      document.querySelectorAll('#quest2Options button').forEach(b => {
+        b.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-950/40', 'bg-rose-950/40');
+      });
+      if (isCorrect) {
+        btn.classList.add('border-emerald-500', 'bg-emerald-950/40');
+        msg.className = "text-xs font-bold text-emerald-400 text-center";
+        msg.textContent = "✓ Crystal Restored! Hexagonal ice crystals repeat every 60° (Order 6)!";
+        playTone(920, 'triangle', 0.4);
+        if (!questsSolved.q2) {
+          questsSolved.q2 = true;
+          updateQuestCount();
+          triggerToast("Quest 2 Solved: Snowflake Repair!", "Awarded +220 XP & Ice Crystallographer Badge", 220);
+        }
+      } else {
+        btn.classList.add('border-rose-500', 'bg-rose-950/40');
+        msg.className = "text-xs font-semibold text-rose-400 text-center";
+        msg.textContent = "Incorrect. Count the 6 primary arms of the snowflake.";
+        playTone(220, 'sawtooth', 0.3);
+      }
+    }
+
+    function answerQuest3(btn, isCorrect) {
+      const msg = document.getElementById('quest3Msg');
+      document.querySelectorAll('#quest3Options button').forEach(b => {
+        b.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-950/40', 'bg-rose-950/40');
+      });
+      if (isCorrect) {
+        btn.classList.add('border-emerald-500', 'bg-emerald-950/40');
+        msg.className = "text-xs font-bold text-emerald-400 text-center";
+        msg.textContent = "✓ Master Detective! The Recycling arrows turn at 120°, but chiral arrows have NO mirror reflection lines!";
+        playTone(960, 'triangle', 0.4);
+        if (!questsSolved.q3) {
+          questsSolved.q3 = true;
+          updateQuestCount();
+          triggerToast("Quest 3 Solved: Logo Detective!", "Awarded +150 XP & Chiral Master Badge", 150);
+        }
+      } else {
+        btn.classList.add('border-rose-500', 'bg-rose-950/40');
+        msg.className = "text-xs font-semibold text-rose-400 text-center";
+        msg.textContent = "Incorrect. Warning triangles have reflection symmetry down the vertical bisector.";
+        playTone(220, 'sawtooth', 0.3);
+      }
+    }
+
+    function updateQuestCount() {
+      const count = Object.values(questsSolved).filter(Boolean).length;
+      document.getElementById('questsSolvedCount').textContent = `${count} / 3`;
+      if (count === 3) {
+        triggerToast("🎉 Rotational Spatial Sector Mastered!", "Promoted to Grand Master of Spatial Symmetry!", 150);
+      }
+    }
+
+    function exportClinicalReport() {
+      triggerToast("Exporting Telemetry PDF", "Compiling CHC cognitive radar and geometry competencies...", 0);
+      setTimeout(() => window.print(), 800);
+    }
+
+    function downloadWorksheet() {
+      triggerToast("Generating Pinwheel PDF", "Assembling 2-Page Rotational Paper Activity...", 40);
+      setTimeout(() => window.print(), 800);
+    }
+
+    window.onload = function() {
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      setShape('triangle');
+    };
+  </script>
+</body>
+</html>
